@@ -2,8 +2,9 @@ import Link from 'next/link';
 import { getPostsMeta, getPostByName } from '@/lib/posts';
 import { notFound } from 'next/navigation';
 import dayjs from 'dayjs';
+import 'highlight.js/styles/github-dark.css';
 
-export const revalidate = 0;
+export const revalidate = 10;
 
 type Props = {
   params: {
@@ -11,19 +12,31 @@ type Props = {
   }
 }
 
-// export async function generateStaticParams() {
-//   const posts = await getPostsMeta();
-//   if (!posts) {
-//     return [];
-//   }
-//
-//   return posts.map((post) => ({
-//     postId: post.abbrlink
-//   }))
-// }
+export async function generateStaticParams() {
+  const posts = await getPostsMeta();
+  if (!posts) {
+    return [];
+  }
+
+  return posts.map((post) => ({
+    postId: post.abbrlink
+  }))
+}
 
 export async function generateMetadata({ params: { postId } }: Props) {
-  const post = await getPostByName(`${postId}.mdx`);
+  const posts = await getPostsMeta();
+  if (!posts) {
+    return {
+      title: 'Post Not Found'
+    }
+  }
+  const selectedPost = posts.filter((post) => post.abbrlink === postId);
+  if (!selectedPost.length) {
+    return {
+      title: 'Post Not Found'
+    }
+  }
+  const post = await getPostByName(`${selectedPost[0].id}.mdx`);
 
   if (!post) {
     return {
@@ -36,7 +49,20 @@ export async function generateMetadata({ params: { postId } }: Props) {
 }
 
 export default async function Post({ params: { postId } }: Props) {
-  const post = await getPostByName(`${postId}.mdx`);
+  const posts = await getPostsMeta();
+  if (!posts) {
+    return {
+      title: 'Post Not Found'
+    }
+  }
+  const selectedPost = posts.filter((post) => post.abbrlink === postId);
+  if (!selectedPost.length) {
+    return {
+      title: 'Post Not Found'
+    }
+  }
+  const post = await getPostByName(`${selectedPost[0].id}.mdx`);
+
   if (!post) {
     notFound();
   }

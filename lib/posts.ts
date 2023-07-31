@@ -1,4 +1,5 @@
 import { compileMDX } from 'next-mdx-remote/rsc';
+import rehypeHighlight from 'rehype-highlight';
 
 type Filetree = {
   tree: [
@@ -24,7 +25,10 @@ export async function getPostByName(fileName: string): Promise<BlogPost | undefi
   const { frontmatter, content } = await compileMDX<{ title: string, date: string, abbrlink: string, tags: string[] }>({
     source: rawMDX,
     options: {
-      parseFrontmatter: true
+      parseFrontmatter: true,
+      mdxOptions: {
+        rehypePlugins: [rehypeHighlight]
+      }
     }
   })
 
