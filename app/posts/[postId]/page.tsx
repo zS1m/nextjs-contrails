@@ -1,54 +1,70 @@
 import Link from 'next/link';
-import { getPostData, getSortedPostsData } from '@/lib/posts';
+import { getPostsMeta, getPostByName } from '@/lib/posts';
 import { notFound } from 'next/navigation';
 import dayjs from 'dayjs';
 
-export function generateStaticParams() {
-  const posts = getSortedPostsData();
+export const revalidate = 0;
 
-  return posts.map((post) => ({
-    postId: post.abbrlink
-  }))
+type Props = {
+  params: {
+    postId: string
+  }
 }
 
-export function generateMetadata({ params }: { params: { postId: string } }) {
-  const posts = getSortedPostsData();
-  const { postId } = params;
+// export async function generateStaticParams() {
+//   const posts = await getPostsMeta();
+//   if (!posts) {
+//     return [];
+//   }
+//
+//   return posts.map((post) => ({
+//     postId: post.abbrlink
+//   }))
+// }
 
-  const post = posts.find((post) => post.abbrlink === postId);
+export async function generateMetadata({ params: { postId } }: Props) {
+  const post = await getPostByName(`${postId}.mdx`);
+
   if (!post) {
     return {
       title: 'Post Not Found'
     }
   }
   return {
-    title: post.title
+    title: post.meta.title
   }
 }
 
-export default async function Post({ params }: { params: { postId: string } }) {
-  const posts = getSortedPostsData();
-  const { postId } = params;
-
-  if (!posts.find((post) => post.abbrlink === postId)) {
-    return notFound();
+export default async function Post({ params: { postId } }: Props) {
+  const post = await getPostByName(`${postId}.mdx`);
+  if (!post) {
+    notFound();
   }
+  const { meta, content } = post;
 
-  const { title, date, contentHtml } = await getPostData(postId);
-  const pubDate = dayjs(date).format('YYYY-MM-DD');
+  const pubDate = dayjs(meta.date).format('YYYY-MM-DD');
+  const tags = meta.tags.map((tag, i) => (
+    <Link key={i} href={`/tags/${tag}`}>{tag}</Link>
+  ))
 
   return (
-    <main className="px-6 prose prose-xl prose-slate dark:prose-invert mx-auto">
-      <h1 className="text-3xl mt-4 mb-0">{title}</h1>
-      <p className="mt-0">
+    <>
+      <h2 className="text-3xl mt-4 mb-0">{meta.title}</h2>
+      <p className="mt-0 text-sm">
         {pubDate}
       </p>
       <article>
-        <section dangerouslySetInnerHTML={{ __html: contentHtml }} />
-        <p>
-          <Link href="/">← Back to home</Link>
-        </p>
+        {content}
       </article>
-    </main>
+      <section>
+        <h3>Related:</h3>
+        <div className="flex flex-row gap-4">
+          {tags}
+        </div>
+      </section>
+      <p className="mb-10">
+        <Link href="/">← Back to home</Link>
+      </p>
+    </>
   )
 }

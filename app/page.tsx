@@ -2,8 +2,8 @@ import Posts from '@/app/components/Posts';
 
 export default function Home() {
   return (
-    <main>
+    <div className="mx-auto">
       <Posts />
-    </main>
+    </div>
   )
 }

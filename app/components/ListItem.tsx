@@ -2,7 +2,7 @@ import Link from 'next/link';
 import dayjs from 'dayjs';
 
 type Props = {
-  post: BlogPost
+  post: Meta
 }
 export default function ListItem({ post }: Props) {
   const { title, date, abbrlink } = post;
