@@ -7,5 +7,5 @@ export default function Home() {
     <div className="mx-auto">
       <Posts />
     </div>
-  )
+  );
 }

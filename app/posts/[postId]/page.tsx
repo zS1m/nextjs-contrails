@@ -17,10 +17,9 @@ export async function generateStaticParams() {
   if (!posts) {
     return [];
   }
-
   return posts.map((post) => ({
     postId: post.abbrlink
-  }))
+  }));
 }
 
 export async function generateMetadata({ params: { postId } }: Props) {
@@ -28,24 +27,24 @@ export async function generateMetadata({ params: { postId } }: Props) {
   if (!posts) {
     return {
       title: 'Post Not Found'
-    }
+    };
   }
   const selectedPost = posts.filter((post) => post.abbrlink === postId);
   if (!selectedPost.length) {
     return {
       title: 'Post Not Found'
-    }
+    };
   }
   const post = await getPostByName(`${selectedPost[0].id}.mdx`);
 
   if (!post) {
     return {
       title: 'Post Not Found'
-    }
+    };
   }
   return {
     title: post.meta.title
-  }
+  };
 }
 
 export default async function Post({ params: { postId } }: Props) {
@@ -53,13 +52,13 @@ export default async function Post({ params: { postId } }: Props) {
   if (!posts) {
     return {
       title: 'Post Not Found'
-    }
+    };
   }
   const selectedPost = posts.filter((post) => post.abbrlink === postId);
   if (!selectedPost.length) {
     return {
       title: 'Post Not Found'
-    }
+    };
   }
   const post = await getPostByName(`${selectedPost[0].id}.mdx`);
 
@@ -71,7 +70,7 @@ export default async function Post({ params: { postId } }: Props) {
   const pubDate = dayjs(meta.date).format('YYYY-MM-DD');
   const tags = meta.tags.map((tag, i) => (
     <Link key={i} href={`/tags/${tag}`}>{tag}</Link>
-  ))
+  ));
 
   return (
     <>
@@ -92,5 +91,5 @@ export default async function Post({ params: { postId } }: Props) {
         <Link href="/">← Back to home</Link>
       </p>
     </>
-  )
+  );
 }

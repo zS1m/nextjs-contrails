@@ -1,10 +1,10 @@
 import './globals.css';
-import Navbar from '@/app/components/Navbar';
 import type { Metadata } from 'next';
+import Navbar from '@/app/components/Navbar';
 
 export const metadata: Metadata = {
   title: '凝结尾迹',
-  description: '专注于日常学习技术分享',
+  description: '专注于日常学习技术分享'
 }
 
 export default function RootLayout({
@@ -21,5 +21,5 @@ export default function RootLayout({
         </main>
       </body>
     </html>
-  )
+  );
 }

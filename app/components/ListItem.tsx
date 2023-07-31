@@ -13,5 +13,5 @@ export default function ListItem({ post }: Props) {
       <br />
       <p className="text-sm mt-1">{formattedDate}</p>
     </li>
-  )
+  );
 }
