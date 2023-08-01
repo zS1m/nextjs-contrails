@@ -19,7 +19,7 @@ export default function Navbar() {
   )
 }
 
-const NavLink = ({ href, children }) => {
+const NavLink = ({ href, children }: { href: string, children: string }) => {
   return (
     <Link
       className="
