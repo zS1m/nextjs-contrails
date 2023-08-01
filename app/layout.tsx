@@ -1,5 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import { GoogleAnalytics } from '@/app/components/GoogleAnalytics';
 import Navbar from '@/app/components/Navbar';
 
 export const metadata: Metadata = {
@@ -14,6 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-CN">
+      <GoogleAnalytics />
       <body className="bg-gray-100">
         <Navbar />
         <main className="px-4 md:px-6 prose prose-xl prose-slate mx-auto">
