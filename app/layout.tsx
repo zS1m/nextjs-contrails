@@ -4,7 +4,11 @@ import { GoogleAnalytics } from '@/app/components/GoogleAnalytics';
 import Navbar from '@/app/components/Navbar';
 
 export const metadata: Metadata = {
-  title: '凝结尾迹',
+  metadataBase: new URL(`${process.env.SITE_URL}` || 'http://localhost:3000'),
+  title: {
+    default: '凝结尾迹',
+    template: '%s | 凝结尾迹'
+  },
   description: '专注于日常学习技术分享'
 }
 

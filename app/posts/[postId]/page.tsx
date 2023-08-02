@@ -26,24 +26,31 @@ export async function generateMetadata({ params: { postId } }: Props) {
   const posts = await getPostsMeta();
   if (!posts) {
     return {
-      title: 'Post Not Found'
+      title: '无文章',
+      description: '无文章'
     };
   }
   const selectedPost = posts.filter((post) => post.abbrlink === postId);
   if (!selectedPost.length) {
     return {
-      title: 'Post Not Found'
+      title: '未找到文章',
+      description: '未找到文章'
     };
   }
   const post = await getPostByName(`${selectedPost[0].id}.mdx`);
 
   if (!post) {
     return {
-      title: 'Post Not Found'
+      title: '未找到文章',
+      description: '未找到文章'
     };
   }
   return {
-    title: post.meta.title
+    title: post.meta.title,
+    description: post.meta.description,
+    alternates: {
+      canonical: `/posts/${selectedPost[0].abbrlink}`
+    }
   };
 }
 

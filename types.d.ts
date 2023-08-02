@@ -1,6 +1,7 @@
 type Meta = {
   id: string,
   title: string,
+  description: string,
   date: string,
   abbrlink: string,
   tags: string[]
