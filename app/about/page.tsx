@@ -10,6 +10,8 @@ export const metadata: Metadata = {
 
 export default function About() {
   return (
-    <div>关于</div>
+    <>
+      <div className="p-4 text-center">网站监修中...</div>
+    </>
   );
 }
