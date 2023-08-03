@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function About() {
   return (
     <>
-      <div className="p-4 text-center">网站监修中...</div>
+      <div className="p-6 text-center text-2xl text-indigo-400">网站监修中...</div>
     </>
   );
 }
