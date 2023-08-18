@@ -21,7 +21,18 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params: { tag } }: Props) {
   return {
-    title: `${tag} | 凝结尾迹`
+    title: `${tag}`,
+    description: `标签：${tag}`,
+    alternates: {
+      canonical: `/tags/${tag}`
+    },
+    openGraph: {
+      title: `${tag}`,
+      description: `标签：${tag}`,
+      url: `/tags/${tag}`,
+      siteName: '凝结尾迹',
+      type: 'website'
+    }
   };
 }
 

@@ -56,7 +56,7 @@ export async function generateMetadata({ params: { postId } }: Props) {
       description: post.meta.description,
       url: `/posts/${selectedPost[0].abbrlink}`,
       siteName: '凝结尾迹',
-      type: 'website'
+      type: 'article'
     }
   };
 }
@@ -88,7 +88,7 @@ export default async function Post({ params: { postId } }: Props) {
 
   return (
     <>
-      <h2 className="text-3xl mt-4 mb-0">{meta.title}</h2>
+      <h1 className="text-3xl mt-4 mb-0">{meta.title}</h1>
       <p className="mt-0 text-sm">
         {pubDate}
       </p>
