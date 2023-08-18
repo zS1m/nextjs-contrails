@@ -1,12 +1,15 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Navbar() {
   return (
-    <header className="sticky top-0 bg-white/70 drop-shadow-md backdrop-blur z-10">
-      <nav className="mx-auto py-4 px-4 md:px-6">
+    <header className="sticky flex items-center justify-between px-4 md:px-6 top-0 bg-white/80 drop-shadow-md backdrop-blur z-10">
+      <Link href="/">
+        <Image alt="凝结尾迹" src="/images/avatar.png" width="60" height="60"></Image>
+      </Link>
+      <nav className="py-5 px-4 md:px-6">
         <ul className="flex space-x-6 text-lg md:text-xl justify-start">
           {[
-            ['主页', '/'],
             ['关于', '/about']
           ].map(([title, url]) => (
             <li key={url}>
