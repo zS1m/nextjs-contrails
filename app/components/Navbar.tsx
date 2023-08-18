@@ -5,7 +5,7 @@ export default function Navbar() {
   return (
     <header className="sticky flex items-center justify-between px-4 md:px-6 top-0 bg-white/80 drop-shadow-md backdrop-blur z-10">
       <Link href="/">
-        <Image alt="凝结尾迹" src="/images/avatar.png" width="60" height="60"></Image>
+        <Image alt="凝结尾迹" src="/images/avatar.png" width="60" height="60" priority={true}></Image>
       </Link>
       <nav className="py-5 px-4 md:px-6">
         <ul className="flex space-x-6 text-lg md:text-xl justify-start">

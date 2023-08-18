@@ -5,6 +5,13 @@ export const metadata: Metadata = {
   description: '关于凝结尾迹',
   alternates: {
     canonical: `/about`
+  },
+  openGraph: {
+    title: '关于',
+    description: '关于凝结尾迹',
+    url: `/about`,
+    siteName: '凝结尾迹',
+    type: 'website'
   }
 }
 

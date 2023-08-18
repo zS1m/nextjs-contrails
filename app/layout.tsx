@@ -9,7 +9,17 @@ export const metadata: Metadata = {
     default: `zS1m's Blog | 凝结尾迹`,
     template: '%s | 凝结尾迹'
   },
-  description: '专注于日常学习技术分享'
+  description: '专注于日常学习技术分享',
+  openGraph: {
+    title: {
+      default: `zS1m's Blog | 凝结尾迹`,
+      template: '%s | 凝结尾迹'
+    },
+    description: '专注于日常学习技术分享',
+    url: `${process.env.SITE_URL}`,
+    siteName: '凝结尾迹',
+    type: 'website'
+  }
 }
 
 export default function RootLayout({

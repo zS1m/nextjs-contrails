@@ -50,6 +50,13 @@ export async function generateMetadata({ params: { postId } }: Props) {
     description: post.meta.description,
     alternates: {
       canonical: `/posts/${selectedPost[0].abbrlink}`
+    },
+    openGraph: {
+      title: post.meta.title,
+      description: post.meta.description,
+      url: `/posts/${selectedPost[0].abbrlink}`,
+      siteName: '凝结尾迹',
+      type: 'website'
     }
   };
 }
