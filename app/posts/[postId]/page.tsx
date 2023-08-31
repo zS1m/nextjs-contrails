@@ -94,6 +94,9 @@ export default async function Post({ params: { postId } }: Props) {
       </p>
       <article>
         {content}
+        <div>
+          未经授权禁止转载: <Link href={`${process.env.SITE_URL}/posts/${postId}`}>{meta.title}</Link>
+        </div>
       </article>
       <section>
         <h3>Related:</h3>
