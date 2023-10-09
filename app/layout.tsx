@@ -1,8 +1,8 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { GoogleAnalytics } from '@/app/components/GoogleAnalytics';
-import Navbar from '@/app/components/Navbar';
-import Footer from '@/app/components/Footer';
+import { GoogleAnalytics } from '@/components/GoogleAnalytics';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   metadataBase: new URL(`${process.env.SITE_URL}` || 'http://localhost:3000'),

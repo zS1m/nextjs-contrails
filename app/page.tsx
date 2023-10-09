@@ -1,4 +1,4 @@
-import Posts from '@/app/components/Posts';
+import Posts from '@/components/Posts';
 
 export const revalidate = 86400;
 
