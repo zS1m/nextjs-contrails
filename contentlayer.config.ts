@@ -18,6 +18,10 @@ export const Post = defineDocumentType(() => ({
     canonicalUrl: { type: 'string' }
   },
   computedFields: {
+    slug: {
+      type: 'string',
+      resolve: (doc) => doc._raw.flattenedPath.replace(/^.+?(\/)/, '')
+    },
     structuredData: {
       type: 'json',
       resolve: (doc) => ({
