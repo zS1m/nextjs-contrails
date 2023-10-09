@@ -1,8 +1,8 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { GoogleAnalytics } from '@/components/GoogleAnalytics';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import Header from '@/components/Header';
+import SectionContainer from '@/components/SectionContainer';
 
 export const metadata: Metadata = {
   metadataBase: new URL(`${process.env.SITE_URL}` || 'http://localhost:3000'),
@@ -29,16 +29,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="zh-CN">
+    <html lang="zh-CN" suppressHydrationWarning>
       <GoogleAnalytics />
-      <body>
-        <div className="relative min-h-screen">
-          <Navbar />
-          <main className="px-4 md:px-6 pb-32 prose prose-xl prose-slate mx-auto">
-            {children}
-          </main>
-          <Footer />
-        </div>
+      <body className="bg-white text-black antialiased dark:bg-gray-950 dark:text-white">
+        <SectionContainer>
+          <div className="flex h-screen flex-col justify-between font-sans">
+            <Header />
+            <main className="mb-auto">{children}</main>
+          </div>
+        </SectionContainer>
       </body>
     </html>
   );

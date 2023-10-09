@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function Navbar() {
+export default function Header() {
   return (
-    <header className="sticky flex items-center justify-between px-4 md:px-6 top-0 bg-white/80 drop-shadow-md backdrop-blur z-10">
+    <header className="flex items-center justify-between py-10">
       <Link href="/" className="flex items-center hover:text-cyan-600 select-none transition-colors duration-300">
         <Image alt="凝结尾迹" src="/avatar.svg" width="42" height="42" priority></Image>
         <span className="ml-2 text-3xl font-semibold font-mono">凝结尾迹</span>
