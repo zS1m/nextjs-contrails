@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { getPostsMeta, getPostByName } from '@/lib/posts';
 import { notFound } from 'next/navigation';
 import dayjs from 'dayjs';
-import 'highlight.js/styles/github-dark.css';
 
 export const revalidate = 86400;
 

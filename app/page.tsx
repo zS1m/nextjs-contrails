@@ -1,4 +1,3 @@
-import Posts from '@/components/Posts';
 import Main from '@/components/Main';
 import { allPosts } from 'contentlayer/generated';
 
