@@ -1,4 +1,5 @@
-import './globals.css';
+import '@/assets/css/tailwind.css';
+
 import type { Metadata } from 'next';
 import { GoogleAnalytics } from '@/components/GoogleAnalytics';
 import Header from '@/components/Header';
@@ -29,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="zh-CN" suppressHydrationWarning>
+    <html lang="zh-CN" className="scroll-smooth" suppressHydrationWarning>
       <GoogleAnalytics />
       <body className="bg-white text-black antialiased dark:bg-gray-950 dark:text-white">
         <SectionContainer>
