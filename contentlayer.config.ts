@@ -1,4 +1,5 @@
-import { defineDocumentType, makeSource } from 'contentlayer/source-files'
+import { defineDocumentType, makeSource } from 'contentlayer/source-files';
+import { readingTime } from 'reading-time-estimator';
 
 export const Post = defineDocumentType(() => ({
   name: 'Post',
@@ -18,9 +19,18 @@ export const Post = defineDocumentType(() => ({
     canonicalUrl: { type: 'string' }
   },
   computedFields: {
+    readingTime: { type: 'json', resolve: (doc) => readingTime(doc.body.raw, 300, 'cn') },
     slug: {
       type: 'string',
       resolve: (doc) => doc._raw.flattenedPath.replace(/^.+?(\/)/, '')
+    },
+    path: {
+      type: 'string',
+      resolve: (doc) => doc._raw.flattenedPath,
+    },
+    filePath: {
+      type: 'string',
+      resolve: (doc) => doc._raw.sourceFilePath,
     },
     structuredData: {
       type: 'json',
