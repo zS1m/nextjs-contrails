@@ -14,5 +14,6 @@ export async function generateStaticParams() {
 }
 
 export default function Page({ params }: Props) {
-  return <div>111</div>;
+  const slug = decodeURI(params.slug.join('/'));
+  return <div>slug: {slug}</div>;
 }
