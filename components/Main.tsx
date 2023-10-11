@@ -1,5 +1,6 @@
 import Link from '@/components/Link';
 import Tag from '@/components/Tag';
+import { formatDate } from '@/lib/utils';
 import { Post } from 'contentlayer/generated';
 
 type Props = {
@@ -31,7 +32,7 @@ export default function Home({ posts }: Props) {
                     <dl>
                       <dt className="sr-only">Published on</dt>
                       <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
-                        <time dateTime={date}>{date}</time>
+                        <time dateTime={date}>{formatDate(date)}</time>
                       </dd>
                     </dl>
                     <div className="space-y-5 xl:col-span-3">
