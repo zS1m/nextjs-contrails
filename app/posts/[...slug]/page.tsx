@@ -32,7 +32,7 @@ export default function Page({ params }: Props) {
         </span>
         </PageTitle>
       </div>
-    )
+    );
   }
 
   const prev = sortedPosts[postIndex + 1];

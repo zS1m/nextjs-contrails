@@ -3,7 +3,7 @@ import { readingTime } from 'reading-time-estimator';
 
 export const Post = defineDocumentType(() => ({
   name: 'Post',
-  filePathPattern: `**/*.mdx`,
+  filePathPattern: `posts/**/*.mdx`,
   contentType: 'mdx',
   fields: {
     title: { type: 'string', required: true },
@@ -47,6 +47,7 @@ export const Post = defineDocumentType(() => ({
 }))
 
 export default makeSource({
-  contentDirPath: 'posts',
+  contentDirPath: '.',
+  contentDirInclude: ['posts'],
   documentTypes: [Post]
 })
