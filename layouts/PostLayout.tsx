@@ -92,6 +92,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                 )}
               </div>
               <div className="pt-4 xl:pt-8">
+                {/* TODO 路径修改为回到/posts，使用basePath */}
                 <Link
                   href={`/`}
                   className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
