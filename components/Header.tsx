@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import headerNavLinks from '@/assets/headerNavLinks';
 
 export default function Header() {
   return (
@@ -8,17 +9,18 @@ export default function Header() {
         <Image alt="凝结尾迹" src="/avatar.svg" width="42" height="42" priority></Image>
         <span className="ml-2 text-3xl font-semibold font-mono">凝结尾迹</span>
       </Link>
-      <nav className="py-4 px-4 md:px-6">
-        <ul className="flex space-x-6 text-lg md:text-xl justify-start">
-          {[
-            ['关于', '/about']
-          ].map(([title, url]) => (
-            <li key={url}>
-              <NavLink href={url}>{title}</NavLink>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      <div className="flex items-center leading-5 space-x-4 sm:space-x-6">
+        {headerNavLinks
+          .filter((link) => link.href !== '/')
+          .map((link) => (
+            <NavLink
+              key={link.title}
+              href={link.href}
+            >
+              {link.title}
+            </NavLink>
+        ))}
+      </div>
     </header>
   );
 }
@@ -27,6 +29,7 @@ const NavLink = ({ href, children }: { href: string, children: string }) => {
   return (
     <Link
       className="
+        hidden sm:block font-medium text-gray-900 dark:text-gray-100
         relative after:absolute after:bg-stone-500
         after:-bottom-0.5 after:left-0 after:h-[2px]
         after:w-full after:origin-bottom-right after:scale-x-0
