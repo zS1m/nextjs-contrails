@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from '@/components/Link';
 import headerNavLinks from '@/assets/headerNavLinks';
 
 export default function Header() {
