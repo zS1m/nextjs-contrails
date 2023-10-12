@@ -1,5 +1,6 @@
 import Link from '@/components/Link';
 import Tag from '@/components/Tag';
+import siteMetadata from '@/assets/siteMetadata';
 import { formatDate } from '@/lib/utils';
 import { Post } from 'contentlayer/generated';
 
@@ -18,13 +19,13 @@ export default function Home({ posts }: Props) {
             Latest
           </h1>
           <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">
-            生如远舟，一期一会
+            {siteMetadata.description}
           </p>
         </div>
         <ul className="divide-y divide-gray-200 dark:divide-gray-700">
           {!posts.length && 'No posts found.'}
           {posts.slice(0, MAX_DISPLAY).map((post) => {
-            const { slug, date, title, summary, tags } = post
+            const { slug, date, title, summary, tags } = post;
             return (
               <li key={slug} className="py-12">
                 <article>
@@ -69,7 +70,7 @@ export default function Home({ posts }: Props) {
                   </div>
                 </article>
               </li>
-            )
+            );
           })}
         </ul>
       </div>
@@ -85,5 +86,5 @@ export default function Home({ posts }: Props) {
         </div>
       )}
     </>
-  )
+  );
 }
