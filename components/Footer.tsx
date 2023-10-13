@@ -1,17 +1,28 @@
 import Link from '@/components/Link';
+import siteMetadata from '@/assets/siteMetadata';
+import SocialIcon from '@/assets/social-icons';
 
 export default function Footer() {
   return (
-    <footer className="absolute bottom-0 w-full bg-gray-100 py-8">
-      <div className="container mx-auto text-center">
-        <p>
-          &copy; {new Date().getFullYear()} zS1m. All rights reserved.
-        </p>
-        <p className="mt-4">
-          Powered by <Link href="https://nextjs.org/" className="text-emerald-500" target="_blank">Next.js</Link> |
-          Designed and developed by{' '}
-          <Link href="https://github.com/zS1m" className="text-emerald-500" target="_blank">zS1m</Link>
-        </p>
+    <footer>
+      <div className="mt-16 flex flex-col items-center">
+        <div className="mb-3 flex space-x-4">
+          <SocialIcon kind="mail" href={`mailto:${siteMetadata.email}`} size={6} />
+          <SocialIcon kind="github" href={siteMetadata.github} size={6} />
+          <SocialIcon kind="juejin" href={siteMetadata.juejin} size={6} />
+        </div>
+        <div className="mb-2 flex space-x-2 text-sm text-gray-500 dark:text-gray-400">
+          <div>{siteMetadata.author}</div>
+          <div>{` • `}</div>
+          <div>{`© ${new Date().getFullYear()}`}</div>
+          <div>{` • `}</div>
+          <Link href="/">{siteMetadata.title}</Link>
+        </div>
+        <div className="mb-8 text-sm text-gray-500 dark:text-gray-400">
+          <Link href="https://github.com/timlrx/tailwind-nextjs-starter-blog">
+            Tailwind Nextjs Theme
+          </Link>
+        </div>
       </div>
     </footer>
   );

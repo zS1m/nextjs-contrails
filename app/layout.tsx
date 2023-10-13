@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { GoogleAnalytics } from '@/components/GoogleAnalytics';
 import { ThemeProviders } from '@/components/ThemeProviders';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import SectionContainer from '@/components/SectionContainer';
 
 export const metadata: Metadata = {
@@ -47,6 +48,7 @@ export default function RootLayout({
             <div className="flex h-screen flex-col justify-between font-sans">
               <Header />
               <main className="mb-auto">{children}</main>
+              <Footer />
             </div>
           </SectionContainer>
         </ThemeProviders>
