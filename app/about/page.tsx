@@ -1,4 +1,8 @@
 import { Metadata } from 'next';
+import { allAuthors, Author } from 'contentlayer/generated';
+import { coreContent } from 'pliny/utils/contentlayer';
+import { MDXLayoutRenderer } from '@/components/MDXLayoutRenderer';
+import AuthorLayout from '@/layouts/AuthorLayout';
 
 export const metadata: Metadata = {
   title: '关于',
@@ -16,9 +20,15 @@ export const metadata: Metadata = {
 }
 
 export default function About() {
+  const author = allAuthors.find((p) => p.slug === 'default') as Author;
+  const mainContent = coreContent(author)
+
   return (
     <>
-      <div className="p-6 text-center text-2xl text-indigo-400">网站监修中...</div>
+      <AuthorLayout content={mainContent}>
+        <MDXLayoutRenderer code={author.body.code} />
+      </AuthorLayout>
     </>
   );
 }
+
