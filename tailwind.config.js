@@ -3,9 +3,13 @@ const colors = require('tailwindcss/colors');
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
+    './node_modules/pliny/**/*.js',
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './layouts/**/*.{js,ts,tsx}',
+    './posts/**/*.mdx',
+    './authors/**/*.mdx'
   ],
   theme: {
     extend: {

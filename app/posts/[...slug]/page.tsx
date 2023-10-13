@@ -1,8 +1,9 @@
 import PageTitle from '@/components/PageTitle';
 import PostLayout from '@/layouts/PostLayout';
 import { MDXLayoutRenderer } from '@/components/MDXLayoutRenderer';
-import { allPosts, Post } from 'contentlayer/generated';
+import { allAuthors, allPosts, Author, Post } from 'contentlayer/generated';
 import { sortPosts } from '@/lib/utils';
+import { allCoreContent, coreContent } from 'pliny/utils/contentlayer';
 
 type Props = {
   params: {
@@ -19,7 +20,7 @@ export async function generateStaticParams() {
 
 export default function Page({ params }: Props) {
   const slug = decodeURI(params.slug.join('/'));
-  const sortedPosts = sortPosts(allPosts);
+  const sortedPosts = allCoreContent(sortPosts(allPosts));
   const postIndex = sortedPosts.findIndex((post) => post.slug === slug);
   // 未找到该文章
   if (postIndex === -1) {
@@ -40,8 +41,18 @@ export default function Page({ params }: Props) {
   const post = allPosts.find((post) => post.slug === slug) as Post;
 
   const authorList = post?.authors || ['default'];
-  const authorDetails = [];
+  const authorDetails = authorList.map((author) => {
+    const authorResults = allAuthors.find((p) => p.slug === author)
+    return coreContent(authorResults as Author)
+  });
+  const mainContent = coreContent(post);
   const jsonLd = post.structuredData;
+  jsonLd['author'] = authorDetails.map((author) => {
+    return {
+      '@type': 'Person',
+      name: author.name,
+    };
+  });
 
   return (
     <>
@@ -49,7 +60,7 @@ export default function Page({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <PostLayout content={post} authorDetails={[]}>
+      <PostLayout content={mainContent} authorDetails={authorDetails} next={next} prev={prev}>
         <MDXLayoutRenderer code={post.body.code} />
       </PostLayout>
     </>
