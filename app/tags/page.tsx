@@ -2,7 +2,6 @@ import Link from '@/components/Link';
 import Tag from '@/components/Tag';
 import { slug } from 'github-slugger';
 import allTags from '@/lib/tags';
-import { allPosts } from 'contentlayer/generated';
 
 
 export default async function Page() {
