@@ -1,5 +1,4 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-'use client'
+'use client';
 
 import { usePathname } from 'next/navigation'
 import { slug } from 'github-slugger'
@@ -70,7 +69,7 @@ export default function ListLayoutWithTags({
   pagination,
 }: ListLayoutProps) {
   const pathname = usePathname()
-  const tagCounts = allTags(allPosts);
+  const tagCounts = allTags;
   const tagKeys = Object.keys(tagCounts)
   const sortedTags = tagKeys.sort((a, b) => tagCounts[b] - tagCounts[a])
 

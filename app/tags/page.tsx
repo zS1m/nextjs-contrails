@@ -6,7 +6,7 @@ import { allPosts } from 'contentlayer/generated';
 
 
 export default async function Page() {
-  const tagCounts = allTags(allPosts);
+  const tagCounts = allTags;
   const tagKeys = Object.keys(tagCounts)
   const sortedTags = tagKeys.sort((a, b) => tagCounts[b] - tagCounts[a])
   return (

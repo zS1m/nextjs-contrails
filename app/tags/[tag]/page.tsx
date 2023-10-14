@@ -5,7 +5,7 @@ import { allPosts } from 'contentlayer/generated'
 import allTags from '@/lib/tags';
 
 export const generateStaticParams = async () => {
-  const tagCounts = allTags(allPosts);
+  const tagCounts = allTags;
   const tagKeys = Object.keys(tagCounts)
   const paths = tagKeys.map((tag) => ({
     tag: tag,
