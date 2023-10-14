@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node ./lib/postContentlayer.mjs && next dev",
-    "build": "node ./lib/postContentlayer.mjs && next build",
+    "dev": "cross-env INIT_CWD=$PWD node ./lib/postContentlayer.mjs && next dev",
+    "build": "cross-env INIT_CWD=$PWD node ./lib/postContentlayer.mjs && next build",
     "start": "next start",
     "lint": "next lint"
   },
@@ -32,6 +32,7 @@
   "devDependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/typography": "^0.5.9",
+    "cross-env": "^7.0.3",
     "typescript": "^5.2.2"
   }
 }
