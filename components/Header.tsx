@@ -2,6 +2,8 @@ import Link from '@/components/Link';
 import Logo from '@/public/logo.svg';
 import headerNavLinks from '@/assets/headerNavLinks';
 import siteMetadata from '@/assets/siteMetadata';
+import ThemeSwitch from '@/components/ThemeSwitch';
+import MobileNav from '@/components/MobileNav';
 
 export default function Header() {
   return (
@@ -33,6 +35,8 @@ export default function Header() {
               {link.title}
             </Link>
           ))}
+        <ThemeSwitch />
+        <MobileNav />
       </div>
     </header>
   );

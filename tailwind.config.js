@@ -8,9 +8,11 @@ module.exports = {
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './layouts/**/*.{js,ts,tsx}',
+    './assets/**/*.{js,ts,tsx}',
     './posts/**/*.mdx',
     './authors/**/*.mdx'
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       lineHeight: {
