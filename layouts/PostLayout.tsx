@@ -7,6 +7,7 @@ import SectionContainer from '@/components/SectionContainer';
 import Image from '@/components/Image';
 import Tag from '@/components/Tag';
 import ScrollTopAndComment from '@/components/ScrollTopAndComment';
+import ProgressBar from '@/components/ProgressBar';
 
 const postDateTemplate: Intl.DateTimeFormatOptions = {
   weekday: 'long',
@@ -29,6 +30,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
 
   return (
     <SectionContainer>
+      <ProgressBar />
       <ScrollTopAndComment />
       <article>
         <div className="xl:divide-y xl:divide-gray-200 xl:dark:divide-gray-700">

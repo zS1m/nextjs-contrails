@@ -63,7 +63,7 @@ export default function Home({ posts }: Props) {
                           className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                           aria-label={`Read "${title}"`}
                         >
-                          Read more &rarr;
+                          查看更多 &rarr;
                         </Link>
                       </div>
                     </div>
