@@ -1,12 +1,12 @@
 const siteMetadata = {
-  title: '凝结尾迹',
+  title: `凝结尾迹 - zS1m's Blog`,
   author: 'zS1m',
   headerTitle: '凝结尾迹',
-  description: 'A blog created with Next.js and Tailwind.css',
+  description: '记录分享日常学习的软硬件技术内容',
   language: 'zh-cn',
   theme: 'system', // system, dark or light
   siteUrl: 'https://contrails.space',
-  siteRepo: 'https://github.com/timlrx/tailwind-nextjs-starter-blog',
+  siteRepo: 'https://github.com/zS1m/nextjs-contrails',
   siteLogo: '/static/images/logo.png',
   socialBanner: '/static/images/twitter-card.png',
   mastodon: 'https://mastodon.social/@mastodonuser',

@@ -5,8 +5,6 @@ import CustomLink from '@/components/Link'
 
 export const components: MDXComponents = {
   Image,
-  // @ts-ignore
   a: CustomLink,
-  // @ts-ignore
   pre: Pre
 }

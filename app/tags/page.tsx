@@ -4,7 +4,7 @@ import { slug } from 'github-slugger';
 import allTags from '@/lib/tags';
 import { genPageMetadata } from '@/lib/seo';
 
-export const metadata = genPageMetadata({ title: '标签' })
+export const metadata = genPageMetadata({ title: '归档' })
 
 export default async function Page() {
   const tagCounts = allTags;
