@@ -2,8 +2,6 @@ import { defineDocumentType, makeSource, ComputedFields } from 'contentlayer/sou
 import { readingTime } from 'reading-time-estimator';
 import siteMetadata from './assets/siteMetadata';
 import rehypePrismPlus from 'rehype-prism-plus';
-import remarkGfm from 'remark-gfm';
-import { remarkImgToJsx } from 'pliny/mdx-plugins';
 
 const computedFields: ComputedFields = {
   readingTime: { type: 'json', resolve: (doc) => readingTime(doc.body.raw) },
@@ -79,10 +77,6 @@ export default makeSource({
   contentDirInclude: ['posts', 'authors'],
   documentTypes: [Post, Author],
   mdx: {
-    remarkPlugins: [
-      remarkGfm,
-      remarkImgToJsx
-    ],
     rehypePlugins: [
       [rehypePrismPlus, { defaultLanguage: 'js', ignoreMissing: true, showLineNumbers: true }]
     ]
