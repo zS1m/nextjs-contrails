@@ -26,6 +26,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "reading-time-estimator": "^1.9.0",
+    "rehype-prism-plus": "^1.6.3",
     "sharp": "^0.32.4",
     "tailwindcss": "3.3.3"
   },

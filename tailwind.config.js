@@ -22,7 +22,7 @@ module.exports = {
         14: '3.5rem',
       },
       colors: {
-        primary: colors.pink,
+        primary: colors.cyan,
         gray: colors.gray,
       },
       typography: ({ theme }) => ({

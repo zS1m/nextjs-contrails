@@ -2,7 +2,9 @@ import Link from '@/components/Link';
 import Tag from '@/components/Tag';
 import { slug } from 'github-slugger';
 import allTags from '@/lib/tags';
+import { genPageMetadata } from '@/lib/seo';
 
+export const metadata = genPageMetadata({ title: '标签' })
 
 export default async function Page() {
   const tagCounts = allTags;

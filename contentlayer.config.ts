@@ -1,6 +1,7 @@
 import { defineDocumentType, makeSource, ComputedFields } from 'contentlayer/source-files';
 import { readingTime } from 'reading-time-estimator';
 import siteMetadata from './assets/siteMetadata';
+import rehypePrismPlus from 'rehype-prism-plus';
 
 const computedFields: ComputedFields = {
   readingTime: { type: 'json', resolve: (doc) => readingTime(doc.body.raw) },
@@ -74,5 +75,10 @@ export const Author = defineDocumentType(() => ({
 export default makeSource({
   contentDirPath: '.',
   contentDirInclude: ['posts', 'authors'],
-  documentTypes: [Post, Author]
+  documentTypes: [Post, Author],
+  mdx: {
+    rehypePlugins: [
+      [rehypePrismPlus, { defaultLanguage: 'js', ignoreMissing: true, showLineNumbers: true }]
+    ]
+  }
 })

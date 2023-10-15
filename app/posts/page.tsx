@@ -1,8 +1,13 @@
+import '@/assets/css/prism.css';
+
 import ListLayout from '@/layouts/ListLayoutWithTags';
 import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer';
 import { allPosts } from 'contentlayer/generated';
+import { genPageMetadata } from '@/lib/seo';
 
 const POSTS_PER_PAGE = 5
+
+export const metadata = genPageMetadata({ title: '文章' });
 
 export default function BlogPage() {
   const posts = allCoreContent(sortPosts(allPosts));
@@ -21,7 +26,7 @@ export default function BlogPage() {
       posts={posts}
       initialDisplayPosts={initialDisplayPosts}
       pagination={pagination}
-      title="All Posts"
+      title="全部文章"
     />
   )
 }

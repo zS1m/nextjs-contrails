@@ -1,29 +1,57 @@
 import '@/assets/css/tailwind.css';
 
+import { Space_Grotesk } from 'next/font/google';
 import type { Metadata } from 'next';
-import { GoogleAnalytics } from '@/components/GoogleAnalytics';
+import siteMetadata from '@/assets/siteMetadata';
 import { ThemeProviders } from '@/components/ThemeProviders';
+import SectionContainer from '@/components/SectionContainer';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import SectionContainer from '@/components/SectionContainer';
+
+const space_grotesk = Space_Grotesk({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-space-grotesk',
+})
 
 export const metadata: Metadata = {
-  metadataBase: new URL(`${process.env.SITE_URL}` || 'http://localhost:3000'),
+  metadataBase: new URL(siteMetadata.siteUrl),
   title: {
-    default: `zS1m's Blog | 凝结尾迹`,
-    template: '%s | 凝结尾迹'
+    default: siteMetadata.title,
+    template: `%s | ${siteMetadata.title}`,
   },
-  description: '专注于日常学习技术分享',
+  description: siteMetadata.description,
   openGraph: {
-    title: {
-      default: `zS1m's Blog | 凝结尾迹`,
-      template: '%s | 凝结尾迹'
+    title: siteMetadata.title,
+    description: siteMetadata.description,
+    url: './',
+    siteName: siteMetadata.title,
+    images: [siteMetadata.socialBanner],
+    locale: 'zh_CN',
+    type: 'website',
+  },
+  alternates: {
+    canonical: './',
+    types: {
+      'application/rss+xml': `${siteMetadata.siteUrl}/feed.xml`,
     },
-    description: '专注于日常学习技术分享',
-    url: `${process.env.SITE_URL}`,
-    siteName: '凝结尾迹',
-    type: 'website'
-  }
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  twitter: {
+    title: siteMetadata.title,
+    card: 'summary_large_image',
+    images: [siteMetadata.socialBanner],
+  },
 }
 
 export default function RootLayout({
@@ -32,16 +60,19 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="zh-CN" className="scroll-smooth" suppressHydrationWarning>
-      <link rel="apple-touch-icon" sizes="76x76" href="/static/favicons/apple-touch-icon.png" />
-      <link rel="icon" type="image/png" sizes="32x32" href="/static/favicons/favicon-32x32.png" />
-      <link rel="icon" type="image/png" sizes="16x16" href="/static/favicons/favicon-16x16.png" />
-      <link rel="manifest" href="/static/favicons/site.webmanifest" />
-      <link rel="mask-icon" href="/static/favicons/safari-pinned-tab.svg" color="#5bbad5" />
+    <html
+      lang={siteMetadata.language}
+      className={`${space_grotesk.variable} scroll-smooth`}
+      suppressHydrationWarning
+    >
+      <link rel="apple-touch-icon" sizes="76x76" href="/favicons/apple-touch-icon.png" />
+      <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
+      <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
+      <link rel="manifest" href="/favicons/site.webmanifest" />
+      <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#5bbad5" />
       <meta name="msapplication-TileColor" content="#000000" />
       <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff" />
       <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
-      <GoogleAnalytics />
       <body className="bg-white text-black antialiased dark:bg-gray-950 dark:text-white">
         <ThemeProviders>
           <SectionContainer>
