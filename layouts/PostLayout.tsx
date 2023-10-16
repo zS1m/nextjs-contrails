@@ -90,6 +90,12 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
             </dl>
             <div className="divide-y divide-gray-200 dark:divide-gray-700 xl:col-span-3 xl:row-span-2 xl:pb-0">
               <div className="prose max-w-none pb-8 pt-10 dark:prose-invert">{children}</div>
+              <div
+                className="pb-6 pt-6 text-center text-gray-700 dark:text-gray-300"
+                id="comment"
+              >
+                <Comment />
+              </div>
             </div>
             <footer className="pb-6">
               <div className="divide-gray-200 text-sm font-medium leading-5 dark:divide-gray-700 xl:col-start-1 xl:row-start-2 xl:divide-y">
@@ -140,12 +146,6 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                 </Link>
               </div>
             </footer>
-            <div
-                className="pb-6 pt-6 text-center text-gray-700 dark:text-gray-300"
-                id="comment"
-            >
-              <Comment />
-            </div>
           </div>
         </div>
       </article>
