@@ -10,6 +10,11 @@ const WalineComment = () => {
       el: '#waline',
       dark: '.dark',
       serverURL: 'https://waline.contrails.space/',
+      emoji: [
+        'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/weibo',
+        'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/alus'
+      ],
+      requiredMeta: ['nick']
       // 此处可以配置更多配置，参考Waline官方文档...
     });
   }, []);
