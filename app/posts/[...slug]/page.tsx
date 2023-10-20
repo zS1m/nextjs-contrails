@@ -1,3 +1,6 @@
+import '@/assets/css/prism.css';
+import 'katex/dist/katex.css';
+
 import PageTitle from '@/components/PageTitle';
 import PostLayout from '@/layouts/PostLayout';
 import { MDXLayoutRenderer } from '@/components/MDXLayoutRenderer';

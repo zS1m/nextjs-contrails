@@ -2,6 +2,14 @@ import { defineDocumentType, makeSource, ComputedFields } from 'contentlayer/sou
 import { readingTime } from 'reading-time-estimator';
 import siteMetadata from './assets/siteMetadata';
 import rehypePrismPlus from 'rehype-prism-plus';
+import { remarkCodeTitles, remarkExtractFrontmatter, remarkImgToJsx } from 'pliny/mdx-plugins/index.js';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeSlug from 'rehype-slug';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import rehypePresetMinify from 'rehype-preset-minify';
+import { Pluggable } from 'unified';
+import rehypeKatex from 'rehype-katex';
 
 const computedFields: ComputedFields = {
   readingTime: { type: 'json', resolve: (doc) => readingTime(doc.body.raw) },
@@ -77,8 +85,19 @@ export default makeSource({
   contentDirInclude: ['posts', 'authors'],
   documentTypes: [Post, Author],
   mdx: {
+    remarkPlugins: [
+      remarkExtractFrontmatter,
+      remarkGfm,
+      remarkCodeTitles,
+      remarkMath,
+      remarkImgToJsx
+    ],
     rehypePlugins: [
-      [rehypePrismPlus, { defaultLanguage: 'js', ignoreMissing: true, showLineNumbers: true }]
+      rehypeSlug,
+      rehypeAutolinkHeadings,
+      rehypeKatex,
+      [rehypePrismPlus, { defaultLanguage: 'js', ignoreMissing: true, showLineNumbers: true }],
+      rehypePresetMinify as Pluggable<any[]>
     ]
   }
 })

@@ -1,7 +1,7 @@
-const colors = require('tailwindcss/colors');
+import type { Config } from 'tailwindcss'
+import colors from 'tailwindcss/colors';
 
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+const config: Config = {
   content: [
     './node_modules/pliny/**/*.js',
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -25,7 +25,7 @@ module.exports = {
         primary: colors.cyan,
         gray: colors.gray,
       },
-      typography: ({ theme }) => ({
+      typography: ({ theme }: any) => ({
         DEFAULT: {
           css: {
             a: {
@@ -69,3 +69,4 @@ module.exports = {
     require('@tailwindcss/typography')
   ],
 }
+export default config

@@ -1,5 +1,3 @@
-import '@/assets/css/prism.css';
-
 import ListLayout from '@/layouts/ListLayoutWithTags';
 import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer';
 import { allPosts } from 'contentlayer/generated';
