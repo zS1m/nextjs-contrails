@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import type { Author } from 'contentlayer/generated';
 import SocialIcon from '@/assets/social-icons';
 import Image from '@/components/Image';
+import Comment from '@/components/Comment';
 
 interface Props {
   children: ReactNode
@@ -41,6 +42,12 @@ export default function AuthorLayout({ children, content }: Props) {
           <div className="prose max-w-none pb-8 pt-8 dark:prose-invert xl:col-span-2">
             {children}
           </div>
+        </div>
+        <div
+          className="pb-8 pt-8 text-center text-gray-700 dark:text-gray-300"
+          id="comment"
+        >
+          <Comment />
         </div>
       </div>
     </>
