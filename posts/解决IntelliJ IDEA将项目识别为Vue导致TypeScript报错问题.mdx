@@ -1,0 +1,36 @@
+---
+title: '解决IntelliJ IDEA将项目识别为Vue导致TypeScript报错问题(Vue: Type Element is not assignable to type ReactNode)'
+date: '2023-10-20'
+summary: '当项目依赖中存在Vue相关依赖时，IntelliJ IDEA可能错误地将其标识为Vue项目，导致无法正确识别原项目框架，从而出现类似(Vue: Type Element is not assignable to type ReactNode)的错误信息，
+本文将介绍一种解决该问题的方法。'
+tags:
+  - TypeScript
+  - IDE
+---
+
+## 一、问题描述
+
+当项目依赖中存在Vue相关依赖时，IntelliJ IDEA可能错误地将其标识为Vue项目，导致无法正确识别原项目框架，从而出现类似`Vue: Type Element is not assignable to type ReactNode`的错误信息，
+在搭建本站的过程中，前前后后经历过很多次修改，某次修改完后突然发现`.tsx`文件一片红，IDEA提示错误如下
+```
+Vue: Type Element is not assignable to type ReactNode
+```
+
+![错误界面](https://chev.contrails.space:12650/images/2023/10/20/7319791894671b5833f41136b2904a69.png)
+
+## 二、排查与解决
+
+初步判断是什么依赖或者设置影响了React的识别，经过排查后发现是我为博客新增的评论系统[Waline](https://waline.js.org/)与Nextjs有冲突，只要添加该依赖，项目就会报红。
+
+于是乎去Waline的仓库提了[issue](https://github.com/walinejs/waline/issues/2124)，在开发者的帮助下确认了是IDEA的问题，于是给IDEA提了issue。在此期间，我看到一个相似的[issue](https://youtrack.jetbrains.com/issue/WEB-61574/IDE-assumes-all-projects-as-Vue-projects-if-a-package.json-located-in-user-root-path-has-Vue-dependency)，
+里面提到：如果项目依赖中存在Vue相关的依赖，IDE就会将所有项目认为是Vue项目。至此我更加确信是IDEA的问题，但是工作人员给出的答复如下(实在是太怠惰了😑)
+> That's how it is supposed to work, unfortunately. Having Vue (or Angular) dependency in any of parent folders enables Vue (or Angular) support.
+
+这样的答复几乎等于没说，于是我重新提了一个[issue](https://youtrack.jetbrains.com/issue/WEB-63450)，这次另一位工作人员给了有效答复
+> As a workaround, you can disable Vue service in Settings | Languages & Frameworks | TypeScript | Vue.
+
+而且解决方案中提到该设置仅针对单个项目，不用担心对其他项目有影响。经试验，`禁用Vue服务`或者将服务更改为`TypeScript服务`都是可以的，具体设置方法如下：
+
+`文件 -> 设置 -> 语言和框架 -> TypeScript -> Vue`，选择第一项`已禁用`或最后一项`TypeScript服务`，完成后重新启动IDEA，问题解决。
+
+![设置](https://chev.contrails.space:12650/images/2023/10/20/e66ba9878cf52369da503d4fe23afa8d.png)
