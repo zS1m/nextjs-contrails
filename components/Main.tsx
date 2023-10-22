@@ -8,7 +8,7 @@ type Props = {
   posts: Post[]
 }
 
-const MAX_DISPLAY = 5;
+const MAX_DISPLAY = 6;
 
 export default function Home({ posts }: Props) {
   return (
