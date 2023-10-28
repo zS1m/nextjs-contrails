@@ -6,6 +6,9 @@ import { ThemeProviders } from '@/components/ThemeProviders';
 import SectionContainer from '@/components/SectionContainer';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { GA } from 'pliny/analytics/GoogleAnalytics';
+
+const googleAnalyticsId = 'G-2TZJLRENYK';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),
@@ -68,6 +71,7 @@ export default function RootLayout({
       <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
       <body className="bg-white text-black antialiased dark:bg-gray-950 dark:text-white">
         <ThemeProviders>
+          <GA googleAnalyticsId={googleAnalyticsId} />
           <SectionContainer>
             <div className="flex h-screen flex-col justify-between font-sans">
               <Header />
