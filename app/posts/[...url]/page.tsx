@@ -13,13 +13,13 @@ import { components } from '@/components/MDXComponents';
 
 type Props = {
   params: {
-    slug: string[]
+    url: string
   }
 }
 
-export async function generateMetadata({ params }: { params: { slug: string[] } }): Promise<Metadata | undefined> {
-  const slug = decodeURI(params.slug.join('/'))
-  const post = allPosts.find((p) => p.slug === slug)
+export async function generateMetadata({ params }: Props): Promise<Metadata | undefined> {
+  const url = decodeURI(params.url);
+  const post = allPosts.find((post) => post.url === url);
   const authorList = post?.authors || ['default']
   const authorDetails = authorList.map((author) => {
     const authorResults = allAuthors.find((p) => p.slug === author)
@@ -74,9 +74,9 @@ export async function generateStaticParams() {
 }
 
 export default function Page({ params }: Props) {
-  const slug = decodeURI(params.slug.join('/'));
+  const url = decodeURI(params.url);
   const sortedPosts = allCoreContent(sortPosts(allPosts));
-  const postIndex = sortedPosts.findIndex((post) => post.slug === slug);
+  const postIndex = sortedPosts.findIndex((post) => post.url === url);
   // 未找到该文章
   if (postIndex === -1) {
     return (
@@ -93,7 +93,7 @@ export default function Page({ params }: Props) {
 
   const prev = sortedPosts[postIndex + 1];
   const next = sortedPosts[postIndex - 1];
-  const post = allPosts.find((post) => post.slug === slug) as Post;
+  const post = allPosts.find((post) => post.url === url) as Post;
 
   const authorList = post?.authors || ['default'];
   const authorDetails = authorList.map((author) => {

@@ -20,13 +20,13 @@ const postDateTemplate: Intl.DateTimeFormatOptions = {
 interface LayoutProps {
   content: CoreContent<Post>
   authorDetails: CoreContent<Author>[]
-  next?: { path: string; title: string }
-  prev?: { path: string; title: string }
+  next?: { path: string; title: string, url: string }
+  prev?: { path: string; title: string, url: string }
   children: ReactNode
 }
 
 export default function PostLayout({ content, authorDetails, next, prev, children }: LayoutProps) {
-  const { filePath, path, slug, date, title, tags } = content
+  const { path, url, date, title, tags } = content
   const basePath = path.split('/')[0]
 
   return (
@@ -113,7 +113,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                           上一篇文章
                         </h2>
                         <div className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
-                          <Link href={`/${prev.path}`}>{prev.title}</Link>
+                          <Link href={`/posts/${prev.url}`}>{prev.title}</Link>
                         </div>
                       </div>
                     )}
@@ -123,7 +123,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                           下一篇文章
                         </h2>
                         <div className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
-                          <Link href={`/${next.path}`}>{next.title}</Link>
+                          <Link href={`/posts/${next.url}`}>{next.title}</Link>
                         </div>
                       </div>
                     )}
