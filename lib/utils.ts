@@ -12,3 +12,13 @@ export function formatDate(date: string) {
 export function sortPosts(posts: Post[]) {
   return posts.sort((a, b) => a.date < b.date ? 1 : -1);
 }
+
+export function truncateSummary(text?: string, maxLength = 160) {
+  if (!text) {
+    return '';
+  } else if (text.length <= maxLength) {
+    return text;
+  } else {
+    return text.slice(0, maxLength) + '...';
+  }
+}

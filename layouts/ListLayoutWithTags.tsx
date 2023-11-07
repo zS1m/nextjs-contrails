@@ -9,6 +9,7 @@ import Link from '@/components/Link'
 import Tag from '@/components/Tag'
 import siteMetadata from '@/assets/siteMetadata'
 import allTags from '@/lib/tags';
+import { truncateSummary } from '@/lib/utils';
 
 interface PaginationProps {
   totalPages: number
@@ -143,7 +144,7 @@ export default function ListLayoutWithTags({
                           </div>
                         </div>
                         <div className="prose max-w-none text-gray-500 dark:text-gray-400">
-                          {summary}
+                          {truncateSummary(summary)}
                         </div>
                       </div>
                     </article>

@@ -1,7 +1,7 @@
 import Link from '@/components/Link';
 import Tag from '@/components/Tag';
 import siteMetadata from '@/assets/siteMetadata';
-import { formatDate } from '@/lib/utils';
+import { formatDate, truncateSummary } from '@/lib/utils';
 import { Post } from 'contentlayer/generated';
 
 type Props = {
@@ -54,7 +54,7 @@ export default function Home({ posts }: Props) {
                           </div>
                         </div>
                         <div className="prose max-w-none text-gray-500 dark:text-gray-400">
-                          {summary}
+                          {truncateSummary(summary)}
                         </div>
                       </div>
                       <div className="text-base font-medium leading-6">
