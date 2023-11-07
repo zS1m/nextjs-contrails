@@ -1,0 +1,153 @@
+---
+title: 'TypeScript使用注意点整理'
+date: '2023-10-23'
+url: 'typescript-usage-best-practices'
+summary: '初次接触TypeScript是刚入职的时候要写Angular，当时其实连JavaScript都没写明白，更别说TypeScript了，依葫芦画瓢，硬是写成了"AnyScript"。当时唯一的感受是，这东西好难用，为什么要给自己加这么多限制。后来新项目选型的时候我选择了Vue2，使用的是JavaScript，这段有点折磨的经历也就这么过去了。时过境迁，在开发过程中，我居然时不时想念起TypeScript，总觉得有时候如果使用的是它而不是JavaScript会更加方便。但此时的我依然对TypeScript一知半解，只知道基本类型注释怎么使用，于是我下定决心，通读了官网的Handbook，偶尔维护老项目时实践了一下，感觉使用起来更加得心应手，也有了一些新的理解，这里记录一下阅读过程中觉得值得注意的地方，后续会持续更新使用过程中容易踩的坑以及一些使用心得。'
+tags:
+  - TypeScript
+---
+
+初次接触TypeScript是刚入职的时候要写Angular，当时其实连JavaScript都没写明白，更别说TypeScript了，依葫芦画瓢，硬是写成了"AnyScript"。当时唯一的感受是，这东西好难用，为什么要给自己加这么多限制。
+
+后来新项目选型的时候我选择了Vue2，使用的是JavaScript，这段有点折磨的经历也就这么过去了。时过境迁，在开发过程中，我居然时不时想念起TypeScript，总觉得有时候如果使用的是它而不是JavaScript会更加方便。
+
+但此时的我依然对TypeScript一知半解，只知道基本类型注释怎么使用，于是我下定决心，通读了官网的Handbook，偶尔维护老项目时实践了一下，感觉使用起来更加得心应手，也有了一些新的理解，这里记录一下阅读过程中觉得值得注意的地方，后续会持续更新使用过程中容易踩的坑以及一些使用心得。
+
+## 一、字面量推断(Literal Inference)
+
+### 错误示例
+在使用字面量类型时，容易出现以下的错误
+```typescript
+declare function handleRequest(url: string, method: "GET" | "POST"): void;
+
+const req = { url: "https://example.com", method: "GET" };
+handleRequest(req.url, req.method);
+```
+上述的代码会报这样一个错误：
+```
+Argument of type 'string' is not assignable to parameter of type '"GET" | "POST"'.
+```
+为什么？因为`req`中的`method`会被推断为`string`类型而不是`GET`这个值，在`req`的创建和`handleRequest`调用之间，`req.method`是可以被重新复制的，因此这里会被TypeScript判定为有错误。
+
+### 如何解决？
+
+- 方法一：
+在以下任意一个位置使用断言，将`method`的类型固定为`Get`值
+```typescript {2, 4}
+// 位置1:
+const req = { url: "https://example.com", method: "GET" as "GET" };
+// 位置2:
+handleRequest(req.url, req.method as "GET");
+```
+
+- 方法二：
+定义`req`时使用断言，将整个对象转化为字面量类型
+```typescript {1}
+const req = { url: "https://example.com", method: "GET" } as const;
+handleRequest(req.url, req.method);
+```
+
+
+## 二、真值窄化(Truthiness narrowing)
+
+虽然下方两行代码的最终值都是true，但是TypeScript将会推断第一行的类型是`Boolean`，推断第二行的类型是字面量`true`
+```typescript
+Boolean("hello"); // type: boolean, value: true
+!!"world"; // type: true,    value: true
+```
+
+
+## 三、解构赋值
+
+使用解构赋值时，可以用以下三种方法设置类型
+- 方法一：
+```typescript
+function greet(person: { name: string; age: number }) {
+  return "Hello " + person.name;
+}
+```
+
+- 方法二：
+```typescript
+interface Person {
+  name: string;
+  age: number;
+}
+
+function greet(person: Person) {
+  return "Hello " + person.name;
+}
+```
+
+- 方法三：
+```typescript
+type Person = {
+  name: string;
+  age: number;
+};
+
+function greet(person: Person) {
+  return "Hello " + person.name;
+}
+```
+
+但是需要注意的是，不可以直接在解构的对象内直接设置类型
+```typescript
+function draw({ shape: Shape, xPos: number = 100 /*...*/ }) {
+  render(shape);
+}
+```
+在JavaScript中，`shape: Shape`语法意味着获取`shape`属性的值并将其重命名为`Shape`，显然TypeScript不能和JavaScript原有语法冲突，因此上述代码会报错：
+`Cannot find name 'shape'. Did you mean 'Shape'?`
+
+## 四、只读属性与只读数组
+
+在TypeScript中可以使用`readonly`关键字将属性标记为只读
+```typescript
+interface SomeType {
+  readonly prop: string;
+}
+
+function doSomething(obj: SomeType) {
+  // 可以读取
+  console.log(`prop has the value '${obj.prop}'.`);
+  // 不能赋值
+  obj.prop = "hello";
+  // Cannot assign to 'prop' because it is a read-only property.
+}
+```
+
+值得注意的是，TypeScript在检查两种类型是否兼容时将`readonly`考虑进来
+```typescript
+interface Person {
+  name: string;
+  age: number;
+}
+
+interface ReadonlyPerson {
+  readonly name: string;
+  readonly age: number;
+}
+
+let writablePerson: Person = {
+  name: "Person McPersonface",
+  age: 42,
+};
+
+// 正常运行
+let readonlyPerson: ReadonlyPerson = writablePerson;
+
+console.log(readonlyPerson.age); // -> '42'
+writablePerson.age++;
+console.log(readonlyPerson.age); // -> '43'
+```
+
+这一点和只读数组类型是不同，只读数组和常规数组之间的赋值不是双向的
+```typescript
+let x: readonly string[] = [];
+let y: string[] = [];
+
+x = y;
+y = x;
+// The type 'readonly string[]' is 'readonly' and cannot be assigned to the mutable type 'string[]'.
+```
