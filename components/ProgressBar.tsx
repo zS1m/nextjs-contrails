@@ -33,7 +33,7 @@ export default function ProgressBar() {
       style={{
         transform: `translateX(${progress - 100}%)`,
       }}
-      className="fixed top-0 left-0 h-1 w-full bg-primary-500 backdrop-blur-3xl transition-transform duration-150 z-10"
+      className="fixed top-0 left-0 h-1 w-full bg-primary-500 backdrop-blur-3xl transition-transform duration-75 z-10"
     />
   )
 }

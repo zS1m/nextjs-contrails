@@ -64,7 +64,6 @@ export default function AuthorLayout({ posts }: Props) {
             </section>
           ))
         }
-
       </div>
     </>
   )
