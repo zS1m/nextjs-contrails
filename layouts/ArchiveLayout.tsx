@@ -38,7 +38,7 @@ export default function AuthorLayout({ posts }: Props) {
           Object.keys(postsSortedByYear).map((year) => (
             // 按年分组
             <section key={year}>
-              <div className="sticky top-0 pt-4 bg-white dark:bg-black shadow-xl shadow-white dark:shadow-black z-10">
+              <div className="sticky top-0 pt-4 bg-white dark:bg-gray-950 shadow-xl shadow-white dark:shadow-gray-950 z-10">
                 <h2 className="text-4xl text-gray-300 px-3 py-4 font-bold tracking-widest">{year}</h2>
               </div>
               <div className="border-l-4 border-primary-300 ml-3 py-16 space-y-14">
