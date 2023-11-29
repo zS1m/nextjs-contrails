@@ -9,6 +9,8 @@ import Tag from '@/components/Tag';
 import ScrollTopAndComment from '@/components/ScrollTopAndComment';
 import ProgressBar from '@/components/ProgressBar';
 import Comment from '@/components/Comment';
+import { FaRegCalendarAlt } from 'react-icons/fa';
+import { FaRegClock } from 'react-icons/fa6';
 
 const postDateTemplate: Intl.DateTimeFormatOptions = {
   weekday: 'long',
@@ -26,7 +28,7 @@ interface LayoutProps {
 }
 
 export default function PostLayout({ content, authorDetails, next, prev, children }: LayoutProps) {
-  const { path, url, date, title, tags } = content
+  const { path, date, title, tags, readingTime } = content
   const basePath = path.split('/')[0]
 
   return (
@@ -41,7 +43,8 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                 <div>
                   <dt className="sr-only">Published on</dt>
                   <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
-                    <time dateTime={date}>
+                    <time dateTime={date} className="inline-flex items-center">
+                      <FaRegCalendarAlt className="mr-1.5" />
                       {new Date(date).toLocaleDateString('zh-CN', postDateTemplate)}
                     </time>
                   </dd>
@@ -50,6 +53,17 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
               <div>
                 <PageTitle>{title}</PageTitle>
               </div>
+              <dl className="space-y-10">
+                <div>
+                  <dt className="sr-only">Reading time</dt>
+                  <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
+                    <span className="inline-flex items-center">
+                      <FaRegClock className="mr-1.5" />
+                      {readingTime.text}
+                    </span>
+                  </dd>
+                </div>
+              </dl>
             </div>
           </header>
           <div className="grid-rows-[auto_1fr] divide-y divide-gray-200 xl:pb-8 dark:divide-gray-700 xl:grid xl:grid-cols-4 xl:gap-x-6 xl:divide-y-0">
