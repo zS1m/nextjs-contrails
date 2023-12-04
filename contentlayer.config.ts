@@ -12,7 +12,7 @@ import { Pluggable } from 'unified';
 import rehypeKatex from 'rehype-katex';
 
 const computedFields: ComputedFields = {
-  readingTime: { type: 'json', resolve: (doc) => readingTime(doc.body.raw, 300,'cn') },
+  readingTime: { type: 'json', resolve: (doc) => readingTime(doc.body.raw, 250,'cn') },
   slug: {
     type: 'string',
     resolve: (doc) => doc._raw.flattenedPath.replace(/^.+?(\/)/, ''),
