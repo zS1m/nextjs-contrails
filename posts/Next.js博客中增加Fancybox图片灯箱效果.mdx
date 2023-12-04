@@ -1,0 +1,78 @@
+---
+title: '为Next.js博客添加Fancybox图片灯箱效果'
+date: '2023-12-04'
+url: 'nextjs-blog-add-fancybox-image-lightbox'
+summary: '一直觉得博客的图片无法进行缩放非常影响使用体验，有些比较小的截图需要放大才能看清，于是在选定Fancybox作为解决方案后，为博客图片增加了灯箱效果'
+tags:
+  - Nextjs
+  - Blog
+---
+
+一直觉得博客的图片无法进行缩放非常影响使用体验，有些比较小的截图需要放大才能看清，于是在~~与懒癌做了激烈的斗争~~选定Fancybox作为解决方案后，为博客图片增加了灯箱效果。
+
+## 效果展示
+
+```javascript
+<Image src="https://chev.contrails.space:12650/images/2023/10/16/8f302892898a6f41ae46fed453b451af.jpg" alt="灯箱效果" width={400} height={400} />
+```
+先看一下这段代码在MDX文件中的效果，点击这张图片👇
+<Image src="https://chev.contrails.space:12650/images/2023/10/16/8f302892898a6f41ae46fed453b451af.jpg" alt="灯箱效果" width={400} height={400} />
+可以看到灯箱提供了缩放、全屏、caption等功能（说起来这不是套娃了吗，笑
+<Image src="https://chev.contrails.space:12650/images/2023/12/04/8d94765d08219337ac4458c2f1fe5690.png" alt="灯箱效果" width={400} height={400} />
+
+## 实现部分
+
+在具体实现之前，先简单介绍一下[MDX](https://mdxjs.com/)是什么，官网描述如下：
+> MDX allows you to use JSX in your markdown content. You can import components, such as interactive charts or alerts,
+> and embed them within your content. This makes writing long-form content with components a blast.
+
+一言以蔽之，就是支持JSX语法的Markdown语法，也就是Markdown的超集。你可以在MDX中使用自定义的、可交互的组件，这使得文章的内容可以更加丰富以及生动。
+
+最开始寻找解决方案的时候是想使用[Lightbox.js](https://www.getlightboxjs.com/)的，因为官网直接提供了Next.js的集成方案，而且效果也很不错，但是后来发现是付费使用，而且价格有点小贵，个人用户35刀买断。当然官方表示可以向开源项目提供免费许可证，我也申请了，但可能是因为当时没有指明是给哪个项目使用，所以一直没有收到回信。
+
+后来我想起了以前使用Hexo的时候，很多主题集成的灯箱：[Fancybox](https://fancyapps.com/fancybox/)。简单翻了一下文档，发现功能似乎更多，而且最重要的是，可以免费使用。虽然应该不是真正意义上的免费，因为官网提供了付费通道，以及FQA里面提到了这么一句话：
+> You are welcome to try them out on your project in a development and staging environment to see if it meets your needs.
+
+不过我还是先用着了┌( ´_ゝ` )┐
+
+接下来看一下具体实现吧，鉴于目前的使用场景是单个图片而不是画廊，而且我想文章里的图片应该都需要灯箱，因此封装的时候写死的东西比较多，当然也留了一定的扩展性，以防将来想法有变。至于画廊，等我有那么多东西可以展示的时候再说吧🤣
+```typescript jsx
+'use client';
+
+import NextImage, { ImageProps } from 'next/image';
+import { useRef, useEffect } from 'react';
+import { Fancybox } from '@fancyapps/ui';
+import '@fancyapps/ui/dist/fancybox/fancybox.css';
+
+const Image = ({ ...rest }: ImageProps) => {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+
+    const delegate = '[data-fancybox]';
+    const options = {};
+
+    Fancybox.bind(container, delegate, options);
+
+    return () => {
+      Fancybox.unbind(container);
+      Fancybox.close();
+    };
+  });
+
+  return (
+    <figure ref={containerRef} className="hover:cursor-pointer">
+      <NextImage data-fancybox="single" data-caption={rest.alt} width={800} height={800} {...rest} />
+    </figure>
+  );
+}
+
+export default Image;
+```
+fancybox将初始化并绑定一个容器，容器中是Next.js提供的`Image`组件，这样可以利用其懒加载、大小优化等特性。直到前几周，我才意识到自己的博客一直没有用上Next.js的图片优化😓
+
+图片的原格式为jpg，大小接近1MB。而现在，它的格式变成了webp，请求中可以观察到大小仅20kB左右，缓存之后就更小了。
+<Image src="https://chev.contrails.space:12650/images/2023/12/04/ff5cadce0e720d3a90b77965704f1cc5.png" alt="图片优化效果" />
+
+总体来说，我对图片灯箱的最终样式还是比较满意的，后续有时间可能会对图片的位置以及灯箱的详细配置进行更多调整。
