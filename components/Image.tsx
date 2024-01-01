@@ -24,7 +24,14 @@ const Image = ({ ...rest }: ImageProps) => {
 
   return (
     <figure ref={containerRef}>
-      <NextImage className="hover:cursor-pointer" data-fancybox="single" data-caption={rest.alt} width={800} height={800} {...rest} />
+      <NextImage
+        className="mx-auto hover:cursor-pointer"
+        data-fancybox="single"
+        data-caption={rest.alt}
+        width={800}
+        height={800}
+        {...rest}
+      />
     </figure>
   );
 }
