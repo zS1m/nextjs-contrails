@@ -4,11 +4,12 @@ const siteMetadata = {
   headerTitle: '凝结尾迹',
   description: '记录分享日常学习的软硬件技术内容',
   language: 'zh-cn',
+  buildTime: '2023-08-01 10:14:12', // 建站时间
   theme: 'system', // system, dark or light
-  siteUrl: 'https://contrails.space',
+  siteUrl: 'https://www.contrails.space',
   siteRepo: 'https://github.com/zS1m/nextjs-contrails',
   siteLogo: '/static/images/logo.png',
-  socialBanner: '/static/images/twitter-card.png',
+  socialBanner: 'https://chev.contrails.space:12650/images/2023/03/28/44f8adeb18db19af2772e5e6436f31fb.png',
   mastodon: 'https://mastodon.social/@mastodonuser',
   email: 'chaosspades@gmail.com',
   github: 'https://github.com/zS1m',
