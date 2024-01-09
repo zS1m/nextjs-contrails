@@ -28,7 +28,7 @@ interface LayoutProps {
 }
 
 export default function PostLayout({ content, authorDetails, next, prev, children }: LayoutProps) {
-  const { path, date, title, tags, readingTime } = content
+  const { path, date, title, tags, readingTime } = content;
   const basePath = path.split('/')[0]
 
   return (

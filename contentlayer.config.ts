@@ -1,5 +1,4 @@
 import { defineDocumentType, makeSource, ComputedFields } from 'contentlayer/source-files';
-import { readingTime } from 'reading-time-estimator';
 import siteMetadata from './assets/siteMetadata';
 import rehypePrismPlus from 'rehype-prism-plus';
 import { remarkCodeTitles, remarkExtractFrontmatter, remarkImgToJsx } from 'pliny/mdx-plugins/index.js';
@@ -10,9 +9,10 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypePresetMinify from 'rehype-preset-minify';
 import { Pluggable } from 'unified';
 import rehypeKatex from 'rehype-katex';
+import { countWords } from './lib/utils';
 
 const computedFields: ComputedFields = {
-  readingTime: { type: 'json', resolve: (doc) => readingTime(doc.body.raw, 250,'cn') },
+  readingTime: { type: 'json', resolve: (doc) => countWords(doc.body.raw) },
   slug: {
     type: 'string',
     resolve: (doc) => doc._raw.flattenedPath.replace(/^.+?(\/)/, ''),
