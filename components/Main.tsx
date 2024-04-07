@@ -3,11 +3,12 @@ import Link from '@/components/Link';
 import Tag from '@/components/Tag';
 import siteMetadata from '@/assets/siteMetadata';
 import { formatDate, truncateSummary } from '@/lib/utils';
+import { CoreContent } from 'pliny/utils/contentlayer';
 import { Post } from 'contentlayer/generated';
 import banner from '@/public/images/banner.png';
 
 type Props = {
-  posts: Post[]
+  posts: CoreContent<Post>[]
 }
 
 const MAX_DISPLAY = 6;
