@@ -22,12 +22,192 @@ draft: true
 
 > Flux 架构就像眼镜：您自会知道什么时候需要它。
 
-## 简单使用
+## 基础用法
 
 正式开始之前，先看一张官方文档中的图片
 
 （此处放图）
 
-Vuex的部分可以看到三个关键词：State、Mutations、Actions，这些要素和视图构成了一个完整的循环，同时这些要素也是Vuex的核心概念。
+Vuex的部分可以看到三个关键词：State、Mutations、Actions，这些要素和视图构成了一个循环，同时这些要素也是Vuex的核心概念。
 
-### Store
+接下来再看一段代码，看不懂没有关系，可以大致看出创建了一个store对象，对象中存储了上文提到的要素。state中存在属性，mutations和actions中存储的都是方法。
+
+```javascript
+const store = new Vuex.Store({
+  state: {
+    count: 0
+  },
+  mutations: {
+    increment (state) {
+      state.count++
+    }
+  },
+  actions: {
+    increment (context) {
+      context.commit('increment')
+    }
+  }
+})
+```
+
+### State
+
+类似Vue中的data，可以用来存储需要共享的响应式数据，初始化方式已经在上文提过
+
+```javascript
+const store = new Vuex.Store({
+  state: {
+    count: 0
+  }
+})
+```
+
+那么数据如何取出来使用呢，这时候需要使用计算属性(computed)
+
+```javascript
+// 创建一个 Counter 组件
+const Counter = {
+  template: `<div>{{ count }}</div>`,
+  computed: {
+	  // 从store中的state取出count属性
+    count () {
+      return store.state.count
+    }
+  }
+}
+```
+
+还是相当直观的，就像获取普通对象中的属性一样。每当`store.state.count`变化的时候, 都会重新求取计算属性，并且触发更新相关联的 DOM。
+
+这种写法有一个缺点，每个子组件都需要import store，这时可以把store挂载为全局属性
+
+```javascript
+const app = new Vue({
+  el: '#app',
+  // store: store的简写
+  store,
+  components: { Counter },
+  template: `
+    <div class="app">
+      <counter></counter>
+    </div>
+  `
+})
+```
+
+此时每个子组件都可以使用this.$store的方式获取store中的内容
+
+```javascript
+const Counter = {
+  template: `<div>{{ count }}</div>`,
+  computed: {
+    count () {
+      return this.$store.state.count
+    }
+  }
+}
+```
+
+此外，Vuex还提供了辅助函数来简化获取数据的过程，但是为了降低心智负担，暂且不表。
+
+### Mutation
+
+光有初始化的数据和读取数据的方法并没有什么用，还需要有方法更新数据，这时候就要用到`mutation`，依然以计数器为例
+
+```javascript
+const store = new Vuex.Store({
+  state: {
+    count: 1
+  },
+  mutations: {
+    increment (state) {
+      // 变更状态
+      state.count++
+    }
+  }
+})
+```
+
+`mutation`类似事件，上述代码注册了一个类型为`increment`的事件，调用时不可直接使用类似mutations.increment()的方法，而是需要用相应的类型调用 store.commit 方法
+
+```javascript
+store.commit('increment')
+```
+
+此外，commit时可以传递参数，参数最好使用对象的形式，这样不仅可以增加可读性，传递多个参数也更方便
+
+```javascript
+mutations: {
+  increment (state, payload) {
+    state.count += payload.amount
+  }
+}
+```
+
+```javascript
+store.commit('increment', { amount: 10 })
+```
+
+看到这里，不知道屏幕前的你是否会有一个疑问：直接调用increment方法修改state中的数据不香吗，为什么要用mutation，这岂不是多此一举，能不能去掉这一步？
+
+理论上来说，是可以去掉的，在另一个Vue状态管理库Pinia中提到
+
+> Pinia API 与 Vuex(4及以下版本) 也有很多不同，即：
+> - *mutation* 已被弃用。它们经常被认为是**极其冗余的**。它们初衷是带来 devtools 的集成方案，但这已不再是一个问题了。
+
+可以看出mutation其实是为了devtools引入的，具体原因大概是因为异步同步操作的记录，感兴趣的话可以看一下这两篇文章
+- [vuex 操作 state 为什么要使用 mutations 作为规范而不是直接修改state？](https://www.zhihu.com/question/519556124/answer/2396562030)
+- [(汇总)为什么Vuex要通过mutations修改state，而不能直接修改](https://juejin.cn/post/7044876418341470245)
+
+需要注意的是，mutation必须是同步函数，那么异步操作如何解决，接下来让我们看一下Action
+
+### Action
+
+Action 类似于 mutation，不同在于：
+
+- Action 提交的是 mutation，而不是直接变更状态。
+- Action 可以包含任意异步操作。
+
+举一个简单的例子
+
+```javascript
+const store = new Vuex.Store({
+  state: {
+    count: 0
+  },
+  mutations: {
+    increment (state) {
+      state.count++
+    }
+  },
+  actions: {
+    increment (context) {
+      context.commit('increment')
+    }
+  }
+})
+```
+
+写法上与action类似，但接受的参数是与 store 实例具有相同方法和属性的 context 对象，可以通过调用context.commit提交一个 mutation，或者通过context.state来获取 state。值得注意的是，context并不是 store 实例本身。
+
+此外，action还可以执行异步操作
+
+```javascript
+actions: {
+  incrementAsync (context) {
+    setTimeout(() => {
+      context.commit('increment')
+    }, 1000)
+  }
+}
+```
+
+还记得mutation的使用方式是store.commit吗，action的使用方式是store.dispatch。和mutation类似，action也可以附加参数。
+
+```javascript
+store.dispatch('incrementAsync', {
+  amount: 10
+})
+```
+
+至此，
