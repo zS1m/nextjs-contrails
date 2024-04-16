@@ -3,6 +3,7 @@ const headerNavLinks = [
   { href: '/posts', title: '文章' },
   { href: '/tags', title: '标签' },
   { href: '/archive', title: '归档' },
+  { href: '/friends', title: '友链' },
   { href: '/about', title: '关于' }
 ]
 
