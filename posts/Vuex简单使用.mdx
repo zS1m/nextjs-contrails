@@ -1,37 +1,32 @@
 ---
-title: 'Vuex简单使用'
-date: '2024-04-07 23:49:00'
-url: 'vuex-simple-usage'
-summary: '自入职以来使用Vue差不多两年了，虽然一直知道Vuex的存在，也完整阅读过官方文档，奈何原项目不大，一直没有实践的机会。近期加入了新的项目，趁着这个机会实践一下并做个记录，相信将来有不少时间要和它打交道'
+title: 'Vuex3.x快速入门'
+date: '2024-04-21 00:05:00'
+url: 'vuex-3-quick-start'
+summary: '自入职以来使用 Vue 差不多两年了，虽然一直知道 Vuex 的存在，也完整浏览过官方文档，奈何原项目不大，一直没有实践的机会。近期加入了新的项目，使用的技术栈是 Vue2.7 和 Vuex3.x，趁着这个机会加深印象并做个记录'
 tags:
   - Vue
   - Vuex
   - 状态管理
-draft: true
 ---
 
-自入职以来使用Vue差不多两年了，虽然一直知道Vuex的存在，也完整阅读过官方文档，奈何原项目不大，一直没有实践的机会。近期加入了新的项目，趁着这个机会实践一下并做个记录，相信将来有不少时间要和它打交道。
+自入职以来使用 Vue 差不多两年了，虽然一直知道 Vuex 的存在，也完整浏览过官方文档，奈何原项目不大，一直没有实践的机会。近期加入了新的项目，使用的技术栈是 Vue2.7 和 Vuex3.x，趁着这个机会加深印象并做个记录。
 
 ## 简介
 
 > Vuex 是一个专为 Vue.js 应用程序开发的状态管理模式。它采用集中式存储管理应用的所有组件的状态，并以相应的规则保证状态以一种可预测的方式发生变化。
 
-在开发过程中，或多或少都会遇到组件之间需要通信的情况：父子组件、兄弟组件，甚至是隔代组件、多个同级组件等等，通常情况下使用prop属性和事件就可以解决。
+在开发过程中，或多或少都会遇到组件之间需要通信的情况：父子组件、兄弟组件，甚至是隔代组件、多个同级组件等等，通常情况下使用 prop 属性和事件就可以解决。
 
-随着组件之间的层级增多，或是多个组件甚至全局都需要共享某些数据时，prop属性和事件就不太适用了，不仅写起来更加复杂，代码的可读性和可维护性也会大大降低，此时就需要一个状态管理模式——Vuex。这样的需求产生地如此自然，就像 Redux 作者 Dan Abramov 所说：
-
+随着组件之间的层级增多，或是多个组件甚至全局都需要共享某些数据时，prop 属性和事件就不太适用了，不仅写起来更加复杂，代码的可读性和可维护性也会大大降低，此时就需要一个状态管理模式——Vuex。这样的需求产生地如此自然，就像 Redux 作者 Dan Abramov 所说：
 > Flux 架构就像眼镜：您自会知道什么时候需要它。
 
 ## 基础用法
 
 正式开始之前，先看一张官方文档中的图片
+<Image src="https://chev.contrails.space:12650/images/2024/04/20/51b067f6b7dddf78819efebb57f09dc4.png" alt="Vuex" height={600} width={600} />
+Vuex 的部分可以看到三个关键词：State、Mutations、Actions，这些要素和视图构成了一个循环，同时这些要素也是 Vuex 的核心概念。
 
-（此处放图）
-
-Vuex的部分可以看到三个关键词：State、Mutations、Actions，这些要素和视图构成了一个循环，同时这些要素也是Vuex的核心概念。
-
-接下来再看一段代码，看不懂没有关系，可以大致看出创建了一个store对象，对象中存储了上文提到的要素。state中存在属性，mutations和actions中存储的都是方法。
-
+接下来再看一段代码，看不懂没有关系，可以大致看出这是一个 store 对象，对象中存储了上文提到的要素。state 中存在属性，mutations 和 actions 中存储的都是方法
 ```javascript
 const store = new Vuex.Store({
   state: {
@@ -52,8 +47,7 @@ const store = new Vuex.Store({
 
 ### State
 
-类似Vue中的data，可以用来存储需要共享的响应式数据，初始化方式已经在上文提过
-
+类似 Vue 中的 data，可以用来存储需要共享的响应式数据，初始化方式已经在上文提过
 ```javascript
 const store = new Vuex.Store({
   state: {
@@ -62,8 +56,7 @@ const store = new Vuex.Store({
 })
 ```
 
-那么数据如何取出来使用呢，这时候需要使用计算属性(computed)
-
+那么数据如何取出来使用呢，这时候需要使用计算属性 (computed)
 ```javascript
 // 创建一个 Counter 组件
 const Counter = {
@@ -76,11 +69,9 @@ const Counter = {
   }
 }
 ```
-
 还是相当直观的，就像获取普通对象中的属性一样。每当`store.state.count`变化的时候, 都会重新求取计算属性，并且触发更新相关联的 DOM。
 
-这种写法有一个缺点，每个子组件都需要import store，这时可以把store挂载为全局属性
-
+这种写法有一个缺点，每个子组件都需要`import store`，这时可以把 store 挂载为全局属性
 ```javascript
 const app = new Vue({
   el: '#app',
@@ -95,8 +86,7 @@ const app = new Vue({
 })
 ```
 
-此时每个子组件都可以使用this.$store的方式获取store中的内容
-
+此时每个子组件都可以使用`this.$store`的方式获取 store 中的内容
 ```javascript
 const Counter = {
   template: `<div>{{ count }}</div>`,
@@ -108,12 +98,11 @@ const Counter = {
 }
 ```
 
-此外，Vuex还提供了辅助函数来简化获取数据的过程，但是为了降低心智负担，暂且不表。
+此外，Vuex 还提供了辅助函数来简化获取数据的过程，但是为了降低心智负担，此处先按下不表。
 
 ### Mutation
 
 光有初始化的数据和读取数据的方法并没有什么用，还需要有方法更新数据，这时候就要用到`mutation`，依然以计数器为例
-
 ```javascript
 const store = new Vuex.Store({
   state: {
@@ -128,14 +117,12 @@ const store = new Vuex.Store({
 })
 ```
 
-`mutation`类似事件，上述代码注册了一个类型为`increment`的事件，调用时不可直接使用类似mutations.increment()的方法，而是需要用相应的类型调用 store.commit 方法
-
+mutation 类似事件，上述代码注册了一个类型为`increment`的事件，调用时不可直接使用类似`mutations.increment()`的方法，而是需要用相应的类型调用`store.commit`方法
 ```javascript
 store.commit('increment')
 ```
 
-此外，commit时可以传递参数，参数最好使用对象的形式，这样不仅可以增加可读性，传递多个参数也更方便
-
+此外，commit 时可以传递参数，参数最好使用对象的形式，这样不仅可以增加可读性，传递多个参数也更方便
 ```javascript
 mutations: {
   increment (state, payload) {
@@ -148,28 +135,27 @@ mutations: {
 store.commit('increment', { amount: 10 })
 ```
 
-看到这里，不知道屏幕前的你是否会有一个疑问：直接调用increment方法修改state中的数据不香吗，为什么要用mutation，这岂不是多此一举，能不能去掉这一步？
+看到这里，不知道你是否会有一个疑问：直接调用 increment 方法修改 state 中的数据不香吗，为什么要用 mutation，这岂不是多此一举，能不能去掉这一步？
 
-理论上来说，是可以去掉的，在另一个Vue状态管理库Pinia中提到
+理论上来说，是可以去掉的，在另一个 Vue 状态管理库 [Pinia](https://pinia.vuejs.org/zh/introduction.html) 中提到
 
 > Pinia API 与 Vuex(4及以下版本) 也有很多不同，即：
-> - *mutation* 已被弃用。它们经常被认为是**极其冗余的**。它们初衷是带来 devtools 的集成方案，但这已不再是一个问题了。
+> - *mutation* 已被弃用。它们经常被认为是**极其冗余的**。它们初衷是带来 devtools 的集成方案，但这已不再是一个问题了。
 
-可以看出mutation其实是为了devtools引入的，具体原因大概是因为异步同步操作的记录，感兴趣的话可以看一下这两篇文章
-- [vuex 操作 state 为什么要使用 mutations 作为规范而不是直接修改state？](https://www.zhihu.com/question/519556124/answer/2396562030)
-- [(汇总)为什么Vuex要通过mutations修改state，而不能直接修改](https://juejin.cn/post/7044876418341470245)
+可以看出 mutation 其实是为了 devtools 引入的，具体原因大概是因为异步同步操作的记录，感兴趣的话可以看一下这两篇文章
+- [vuex 操作 state 为什么要使用 mutations 作为规范而不是直接修改 state？](https://www.zhihu.com/question/519556124/answer/2396562030)
+- [(汇总)为什么 Vuex 要通过 mutations 修改 state，而不能直接修改](https://juejin.cn/post/7044876418341470245)
 
-需要注意的是，mutation必须是同步函数，那么异步操作如何解决，接下来让我们看一下Action
+需要注意的是，mutation 必须是同步函数，那么异步操作如何解决，接下来让我们看一下 action
 
 ### Action
 
-Action 类似于 mutation，不同在于：
+action 类似于 mutation，不同在于：
 
-- Action 提交的是 mutation，而不是直接变更状态。
-- Action 可以包含任意异步操作。
+- action 提交的是 mutation，而不是直接变更状态
+- action 可以包含任意异步操作
 
 举一个简单的例子
-
 ```javascript
 const store = new Vuex.Store({
   state: {
@@ -188,10 +174,9 @@ const store = new Vuex.Store({
 })
 ```
 
-写法上与action类似，但接受的参数是与 store 实例具有相同方法和属性的 context 对象，可以通过调用context.commit提交一个 mutation，或者通过context.state来获取 state。值得注意的是，context并不是 store 实例本身。
+写法上与 action 类似，但接受的参数是与 store 实例具有相同方法和属性的 context 对象，可以通过调用`context.commit`提交一个 mutation，或者通过`context.state`来获取 state。<font color='red'>需要注意的是，context 并不是 store 实例本身。</font>
 
-此外，action还可以执行异步操作
-
+此外，action 还可以执行异步操作
 ```javascript
 actions: {
   incrementAsync (context) {
@@ -202,12 +187,162 @@ actions: {
 }
 ```
 
-还记得mutation的使用方式是store.commit吗，action的使用方式是store.dispatch。和mutation类似，action也可以附加参数。
-
+还记得 mutation 的使用方式是 store.commit 吗，action 的使用方式是 store.dispatch。和 mutation 类似，action 也可以附加参数。
 ```javascript
 store.dispatch('incrementAsync', {
   amount: 10
 })
 ```
 
-至此，
+**至此，Vuex 最基础的概念及用法已经介绍完了，但是为了更简洁优雅的代码和文件结构，还有三个概念需要引入**
+
+## 进阶用法
+
+### Getter
+
+Vuex 允许我们在 store 中定义 getter，类似于 Vue 中的 computed 属性，getter 的返回值会根据它的依赖被缓存起来，且只有依赖值发生了改变才会被重新计算。
+
+看一个简单易懂的例子
+```javascript
+const store = new Vuex.Store({
+  state: {
+    todos: [
+      { id: 1, text: '...', done: true },
+      { id: 2, text: '...', done: false }
+    ]
+  },
+  getters: {
+    doneTodos: state => {
+      return state.todos.filter(todo => todo.done)
+    }
+  }
+})
+```
+doneTodos 根据 state 中的 todos 数组过滤了已完成的条目，它的使用方式与 state 中的属性相同
+
+### 辅助函数
+
+State 章节中提到，使用形如`store.state.count`的方式获取 state 中的属性需要在每个子组件中引入 store，虽然将 store 挂载为全局属性可以解决这一问题，但使用时依然无法避免一遍一遍地调用`this.$store`，且每需要使用一个属性就要调用一次。
+
+因此 Vuex 提供了一系列辅助函数，它们主要用以简化代码
+<Image src="https://chev.contrails.space:12650/images/2024/04/20/39e5fa7371d5e5cf8ffe503ebe04b4cc.png" alt="" height={600} width={600} />
+
+以 state 为例，我们可以使用 mapState 方法将 state 中的属性映射至当前组件的 computed 中，这样不仅可以一次引入多个属性，使用时也更加方便
+```javascript
+computed: {
+  // 当前组件其他计算属性
+  localComputed () { /* ... */ },
+
+  // 使用对象展开运算符将此对象混入到 computed 中
+  ...mapState({
+    // 映射 this.name 为 store.state.name
+    'name',
+    // 映射 this.age 为 store.state.age
+    'age'
+  })
+}
+
+methods: {
+  getUserInfo () {
+    return `My name is ${this.name}, ${this.age} years old.`;
+  }
+}
+```
+同理，getter、mutation、action 也有各自的辅助函数，只是使用的位置稍有区别，详细的使用方法可以在此处查询：[组件绑定的辅助函数](https://v3.vuex.vuejs.org/api/#component-binding-helpers)
+
+也许有时候会看到这样的代码
+```javascript
+computed: {
+  ...mapState({
+    a: state => state.some.nested.module.a,
+    b: state => state.some.nested.module.b
+  })
+},
+methods: {
+  ...mapActions([
+    'some/nested/module/foo', // -> this['some/nested/module/foo']()
+    'some/nested/module/bar' // -> this['some/nested/module/bar']()
+  ])
+}
+```
+
+或者这样的
+```javascript
+computed: {
+  ...mapState('some/nested/module', {
+    a: state => state.a,
+    b: state => state.b
+  })
+},
+methods: {
+  ...mapActions('some/nested/module', [
+    'foo', // -> this.foo()
+    'bar' // -> this.bar()
+  ])
+}
+```
+
+虽然看起来和之前介绍的用法有一些不同，但实际上只是多了一个可选参数：`命名空间`，该参数是由 module 引入的。
+
+### Module
+
+由于使用单一状态树，应用的所有状态会集中到一个比较大的对象，当应用变得非常复杂时，store 对象就有可能变得相当臃肿。
+
+为了解决以上问题，Vuex 允许我们将 store 分割成模块（module）。每个模块拥有自己的 state、mutation、action、getter，甚至是嵌套子模块——从上至下进行同样方式的分割
+```javascript
+const moduleA = {
+  state: () => ({ ... }),
+  mutations: { ... },
+  actions: { ... },
+  getters: { ... }
+}
+
+const moduleB = {
+  state: () => ({ ... }),
+  mutations: { ... },
+  actions: { ... }
+}
+
+const store = new Vuex.Store({
+  modules: {
+    a: moduleA,
+    b: moduleB
+  }
+})
+
+store.state.a // -> moduleA 的状态
+store.state.b // -> moduleB 的状态
+```
+
+通过添加`namespaced: true`的方式可以使 module 成为带命名空间的模块。当模块被注册后，它的所有 getter、action 及 mutation 都会自动根据模块注册的路径调整命名，该方法也适用于层层嵌套的子模块
+```javascript
+const module = {
+  namespaced: true,
+  state: () => ({ ... }),
+  mutations: {
+    login () { ... } // -> commit('a/login')
+  },
+  actions: {
+    login () { ... } // -> dispatch('a/login')
+  },
+  getters: {
+    isAdmin () { ... } // -> getters['a/isAdmin']
+  },
+  modules: {
+    b: {
+      namespaced: true,
+      state: () => ({ ... }),
+      getters: {
+        isVip () { ... } // -> getters['a/b/isVip']
+      }
+      // ...
+    }
+  }
+}
+
+const store = new Vuex.Store({
+  modules: {
+    a: module
+  }
+})
+```
