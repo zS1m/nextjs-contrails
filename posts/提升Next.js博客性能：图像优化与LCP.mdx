@@ -10,7 +10,7 @@ tags:
 draft: true
 ---
 
-今年3月底，为了让博客看起来不那么单调死板，我在首页增加了一张 banner。然而近期登陆 Vercel 控制台的时候发现 Speed Insights 评分越来越低了。不看不知道，一看吓一跳，Speed Insights 面板中的 LCP 指标甚至最高达到了6.2秒，这鲜红的颜色无时无刻不在提醒我，是时候优化博客性能了！
+今年3月底，为了让博客看起来不那么单调死板，我在首页增加了一张 banner。然而近期登陆 Vercel 控制台的时候发现 Speed Insights 评分越来越低了。不看不知道，一看吓一跳，Speed Insights 面板中的 LCP 指标甚至最高达到了 6.2 秒，这鲜红的颜色无时无刻不在提醒我，是时候优化博客性能了！（虽然还没建立很久的说😣）
 
 ## LCP (Largest Contentful Paint)
 
@@ -19,12 +19,34 @@ LCP 即 Largest Contentful Paint，与字面上的含义相同，它代表视口
 ### LCP 衡量的元素类型
 
 Largest Contentful Paint 考虑的元素类型包括：
-- `<img>`元素（[第一帧呈现时间](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/speed/metrics_changelog/2023_08_lcp.md)用于 GIF 或动画 PNG 等动画内容）
-- `<svg>`元素内的`<image>`元素
-- `<video>`元素（系统会使用视频的海报图片加载时间或[第一帧显示时间](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/speed/metrics_changelog/2023_08_lcp.md)，以较早者为准）
-- 一个元素，带有使用`[url()](https://developer.mozilla.org/docs/Web/CSS/url())`函数（而不是[CSS 渐变](https://developer.mozilla.org/docs/Web/CSS/CSS_Images/Using_CSS_gradients)）加载的背景图片
-- 包含文本节点或其他内嵌级文本元素子元素的[块级](https://developer.mozilla.org/docs/Web/HTML/Block-level_elements)元素。
+- `<img>` 元素（[第一帧呈现时间](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/speed/metrics_changelog/2023_08_lcp.md)用于 GIF 或动画 PNG 等动画内容）
+- `<svg>` 元素内的 `<image>` 元素
+- `<video>` 元素（系统会使用视频的海报图片加载时间或[第一帧显示时间](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/speed/metrics_changelog/2023_08_lcp.md)，以较早者为准）
+- 一个元素，带有使用 [url()](https://developer.mozilla.org/docs/Web/CSS/url()) 函数（而不是[CSS 渐变](https://developer.mozilla.org/docs/Web/CSS/CSS_Images/Using_CSS_gradients)）加载的背景图片
+- 包含文本节点或其他内嵌级文本元素子元素的[块级](https://developer.mozilla.org/docs/Web/HTML/Block-level_elements)元素
 
-### LCP
+除此以外，基于 Chromium 的浏览器还会使用启发法排除如`不透明度为0`、`覆盖整个视口`等元素。LCP 衡量方法为了降低复杂度将考量的元素限定在有限范围内，虽然未来有增加的可能性，但这里就不再深入了。
+
+### 良好的 LCP 得分是多少？
+
+作为博客人，我对大部分博客的容忍度还是很高的，很多网站部署在低性能服务器、国外服务器甚至 GitHub Page 上，虽然往往要等待很久，但精彩的内容也确实值得等待。
+
+话虽如此，我们都明白等待时间越长，用户存留率就越低，所以我还是希望自己的博客能够尽量快地加载出来，为了提供良好的用户体验，应该努力将 LCP 控制在 2.5 秒以内，这下能够看出 6.2 秒到底有多夸张了。
+
+<Image src="https://chev.contrails.space:12650/images/2024/05/08/9d2ae93625e5f16cb99647635aaff835.png" alt="" height={800} width={800} />
+
+## Lighthouse 性能测试
+
+在正式优化之前，我们需要使用 Chrome 开发者工具中的 Lighthouse 对网站进行测试，因为 Vercel 上的样本较少，而且受服务器稳定性和用户所在国家等因素影响较大。
+
+可以看到，在针对移动端的测试中 LCP 达到了 2.6 秒
+<Image src="https://chev.contrails.space:12650/images/2024/05/08/d3c7d3d63ba049e81c18ca68ed34fddd.png" alt="" height={800} width={800} />
+
+其实不用看分析结果也能大概猜到是 banner 的问题
+<Image src="https://chev.contrails.space:12650/images/2024/05/08/99d8236df6e1eef15f4b1f89c71258e9.png" alt="" height={800} width={800} />
+
+这张图片的加载时间实在是太长了，明明 Next.js 已经对图片进行过优化了，问题到底出在哪里呢？
+
+## Next.js 图像优化
 
 
