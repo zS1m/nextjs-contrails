@@ -1,0 +1,30 @@
+---
+title: '提升Next.js博客性能：图像优化与LCP'
+date: '2024-04-23 10:46:00'
+url: 'boost-nextjs-blog-performance-image-optimization-lcp'
+summary: '为了让博客看起来不那么单调死板，我在首页增加了一张 banner。然而近期登陆 Vercel 控制台的时候发现 Speed Insights 评分越来越低了。不看不知道，一看吓一跳，LCP 甚至达到了6.2秒，是时候做一些性能上的优化了'
+tags:
+  - Nextjs
+  - 博客
+  - 性能
+draft: true
+---
+
+今年3月底，为了让博客看起来不那么单调死板，我在首页增加了一张 banner。然而近期登陆 Vercel 控制台的时候发现 Speed Insights 评分越来越低了。不看不知道，一看吓一跳，Speed Insights 面板中的 LCP 指标甚至最高达到了6.2秒，这鲜红的颜色无时无刻不在提醒我，是时候优化博客性能了！
+
+## LCP (Largest Contentful Paint)
+
+LCP 即 Largest Contentful Paint，与字面上的含义相同，它代表视口中可见的最大元素的加载时间。这个指标很好地衡量了网页的加载速度，因为通常来说网页的最大元素就是想要呈现给用户的主要内容。
+
+### LCP 衡量的元素类型
+
+Largest Contentful Paint 考虑的元素类型包括：
+- `<img>`元素（[第一帧呈现时间](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/speed/metrics_changelog/2023_08_lcp.md)用于 GIF 或动画 PNG 等动画内容）
+- `<svg>`元素内的`<image>`元素
+- `<video>`元素（系统会使用视频的海报图片加载时间或[第一帧显示时间](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/speed/metrics_changelog/2023_08_lcp.md)，以较早者为准）
+- 一个元素，带有使用`[url()](https://developer.mozilla.org/docs/Web/CSS/url())`函数（而不是[CSS 渐变](https://developer.mozilla.org/docs/Web/CSS/CSS_Images/Using_CSS_gradients)）加载的背景图片
+- 包含文本节点或其他内嵌级文本元素子元素的[块级](https://developer.mozilla.org/docs/Web/HTML/Block-level_elements)元素。
+
+### LCP
+
+
