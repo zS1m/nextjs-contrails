@@ -9,16 +9,17 @@ interface Props {
 const FriendCard = ({ title, link, description, avatar }: Friend) => {
   return (
     <Link href={link}>
+      {/* TODO DARK MODE */}
       <div className="overflow-hidden bg-white shadow-md rounded-xl h-full">
         <div className="flex items-center gap-x-4 p-4">
           <div>
             {avatar && (
               <Image
+                className="h-10 w-10 rounded-full"
                 src={avatar}
-                alt="avatar"
                 width={48}
                 height={48}
-                className="h-10 w-10 rounded-full"
+                alt="avatar"
               />
             )
             }
