@@ -7,10 +7,9 @@ tags:
   - Nextjs
   - 博客
   - 性能
-draft: true
 ---
 
-今年3月底，为了让博客看起来不那么单调死板，我在首页增加了一张 banner。然而近期登陆 Vercel 控制台的时候发现 Speed Insights 评分越来越低了。不看不知道，一看吓一跳，Speed Insights 面板中的 LCP 指标甚至最高达到了 6.2 秒，这鲜红的颜色无时无刻不在提醒我，是时候优化博客性能了！（虽然还没建立很久的说😣）
+今年3月底，为了让博客看起来不那么单调死板，我在首页增加了一张 banner。然而近期登陆 Vercel 控制台的时候发现 Speed Insights 评分越来越低了。不看不知道，一看吓一跳，Speed Insights 面板中的 LCP 指标甚至最高达到了 6.2 秒，这鲜红的颜色无时无刻不在提醒我，是时候优化博客性能了！（虽说建站时间不长）
 
 ## LCP (Largest Contentful Paint)
 
@@ -33,20 +32,117 @@ Largest Contentful Paint 考虑的元素类型包括：
 
 话虽如此，我们都明白等待时间越长，用户存留率就越低，所以我还是希望自己的博客能够尽量快地加载出来，为了提供良好的用户体验，应该努力将 LCP 控制在 2.5 秒以内，这下能够看出 6.2 秒到底有多夸张了。
 
-<Image src="https://chev.contrails.space:12650/images/2024/05/08/9d2ae93625e5f16cb99647635aaff835.png" alt="" height={800} width={800} />
+<Image src="https://chev.contrails.space:12650/images/2024/05/08/9d2ae93625e5f16cb99647635aaff835.png" alt="LCP 指标" height={800} width={800} />
 
 ## Lighthouse 性能测试
 
 在正式优化之前，我们需要使用 Chrome 开发者工具中的 Lighthouse 对网站进行测试，因为 Vercel 上的样本较少，而且受服务器稳定性和用户所在国家等因素影响较大。
 
 可以看到，在针对移动端的测试中 LCP 达到了 2.6 秒
-<Image src="https://chev.contrails.space:12650/images/2024/05/08/d3c7d3d63ba049e81c18ca68ed34fddd.png" alt="" height={800} width={800} />
+<Image src="https://chev.contrails.space:12650/images/2024/05/08/d3c7d3d63ba049e81c18ca68ed34fddd.png" alt="Lighthouse 测试结果" height={800} width={800} />
 
 其实不用看分析结果也能大概猜到是 banner 的问题
-<Image src="https://chev.contrails.space:12650/images/2024/05/08/99d8236df6e1eef15f4b1f89c71258e9.png" alt="" height={800} width={800} />
+<Image src="https://chev.contrails.space:12650/images/2024/05/08/99d8236df6e1eef15f4b1f89c71258e9.png" alt="LCP 元素" height={800} width={800} />
 
 这张图片的加载时间实在是太长了，明明 Next.js 已经对图片进行过优化了，问题到底出在哪里呢？
 
 ## Next.js 图像优化
 
+在本站中，我尽可能地使用了 Next.js 内置的 `<Image>` 标签来加载图片，因为它扩展了 HTML 的 `<img>` 标签并自动进行了优化，包括但不限于：
+- 尺寸优化：使用现代图像格式（如 WebP 和 AVIF），根据设备自动提供适配的图像尺寸
+- 视觉稳定性：在图像加载过程中，自动防止布局偏移（CLS）
+- 更快的页面加载速度：通过浏览器原生的懒加载功能，仅在图像进入视口时加载，支持模糊占位符
+- 资源灵活性：支持按需调整图像大小，即使是存储在远程服务器上的图像也可以实现
 
+可以看到，Next.js 对图片的优化是非常实用的。banner 的实现非常简单，仅需三行代码
+```jsx
+import Image from 'next/image';
+import banner from '@/public/images/banner.png';
+
+<Image src={banner} alt='banner' />
+```
+
+但是问题随之而来，上文提到 Next.js 为了更快的页面加载速度，会使用浏览器原生的懒加载功能，这就导致了图片的加载时间过长。
+
+`<Image>` 标签有一个属性 `priority`，默认为 `false`，设置为 `true` 时，图片会被认为是高优先级并预加载，同时懒加载会被自动禁用。
+
+官方文档中甚至非常贴心地给出了建议，对于任何被检测为 LCP 元素的图片应该使用 `priority` 属性
+> You should use the priority property on any image detected as the Largest Contentful Paint (LCP) element. It may be appropriate to have multiple priority images, as different images may be the LCP element for different viewport sizes.
+
+## 优化 banner
+
+那么我们不妨尝试将 banner 图片的 `priority` 属性设置为 `true`，看看能否提升 LCP 的性能
+```jsx
+<Image src={banner} alt='banner' priority={true} />
+```
+<Image src="https://chev.contrails.space:12650/images/2024/05/16/fb0205f1324c44afd4a587a922c78a17.png" alt="Lighthouse 测试结果" height={800} width={800} />
+
+再次使用 Lighthouse 进行测试，可以看到 LCP 降低到了 0.6 秒，但是结果真的像图片中的一样喜人吗？事实上，在改动刚部署时 LCP 甚至一度飙升，后续的测试结果我认为已经受到了缓存的影响
+<Image src="https://chev.contrails.space:12650/images/2024/05/16/ea5c1c87ccbad88e996e14c8ce539bb9.png" alt="Speed Insight 数据" height={800} width={800} />
+
+这...这不对吧，明明官网特地说明 LCP 元素应当设置 `priority` 属性，为什么我设置了之后 LCP 反而更高了？
+<Image src="https://chev.contrails.space:12650/images/2024/05/16/ef7063becd14ffecd1718819e50feb59.png" alt="" height={400} width={400} />
+
+对此百思不得其解的我直接进行了一波网上冲浪，发现有大量的相关 issue 和帖子反应 `priority` 未生效，甚至有人说还不如使用原生的 `img` 标签，该问题至今依然存在
+<Image src="https://chev.contrails.space:12650/images/2024/05/16/2fef470f2d37c2edf5174ee005da70cc.png" alt="priority 未生效" height={800} width={800} />
+<Image src="https://chev.contrails.space:12650/images/2024/05/16/e5320b19340dfcc0a4eb07cc31c2b19f.png" alt="issue" height={800} width={800} />
+
+## Image 实现
+
+既然如此，我们直接翻看 Next.js 的源码，看看这其中的逻辑到底是怎样的
+```typescript jsx
+// image.tsx
+// 此处仅展示部分关键代码，假设 priority 为 true
+
+export default function Image({
+  priority = false, // priority 默认为 false，传入 true 替换默认值
+  loading // loading 无默认值
+}: ImageProps) {
+  // 定义了一个 isLazy 用于判断是否懒加载，priority 为 true 时 isLazy 为 false
+  let isLazy =
+    !priority && (loading === 'lazy' || typeof loading === 'undefined')
+    const imgElementArgs = {
+      isLazy, // 此处 isLazy 为 false
+      loading, // loading 依然无默认值
+      ...rest
+    }
+  // 返回一个 ImageElement 组件
+  return (
+    <ImageElement {...imgElementArgs} />
+  )
+}
+
+// ImageElement 组件实现
+const ImageElement = ({
+  isLazy,
+  loading
+}: ImageElementProps) => {
+  loading = isLazy ? 'lazy' : loading // isLazy 为 false，loading 依然无默认值
+  return (
+    <img
+      {...rest}
+      {...imgAttributes} // 一些基础属性
+    />
+    {(isLazy || placeholder === 'blur') && (
+      <noscript>
+        <img
+          {...rest}
+          loading={loading} // isLazy 为 true 时，loading 为 lazy
+        />
+      </noscript>
+    )}
+  )
+}
+```
+当 `priority` 为 true 时，该组件返回一个常规的 `img` 标签，而 `img` 标签的 `loading` 属性默认值为 `eager`，也就是立即加载图像，不管它是否在可视视口（visible viewport）之外
+<Image src="https://chev.contrails.space:12650/images/2024/05/16/fd3f0e864364fb199128ecd08cf05236.png" alt="img 标签的 loading 属性" height={800} width={800} />
+
+从 `<Image>` 标签的源码中看不出 Next.js 是如何进行预加载的，只能知道图像会和使用原生 `img` 的方式一样立即加载，至少在我的测试中，`priority` 未生效的问题是确确实实存在的。
+
+## 结语
+
+细想一下，如果你甚至不知道用户会在何时、从什么地方跳转到网站，那预加载从何谈起，最多是发生请求后立即加载。
+
+但如果你知道用户已经加载了某个相关网页，例如首页，而此时文章页中存在一张图片，那么你就可以在首页加载完毕后，提前加载文章页中的图片，因此我猜测 `<Image>` 的预加载可能是基于这种情况的。
+
+这篇文章的本意是想分享一下 Next.js 图像优化的操作，奈何实践过程中遇到了这样的问题，不过也学习到了一些新知识，就当是一次小小的探索吧。
