@@ -1,16 +1,12 @@
-import { allPosts } from 'contentlayer/generated';
-import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer';
+import friends from '@/friends/friends';
 import FriendLayout from '@/layouts/FriendLayout';
 import { genPageMetadata } from '@/lib/seo';
 
-export const metadata = genPageMetadata({ title: '归档' })
+export const metadata = genPageMetadata({ title: '友链' })
 
 export default function Archive() {
-  const posts = allCoreContent(sortPosts(allPosts));
   return (
-    <>
-      <FriendLayout posts={posts}></FriendLayout>
-    </>
+    <FriendLayout friends={friends}></FriendLayout>
   );
 }
 

@@ -1,6 +1,10 @@
-import friends, { Friend } from '@/friends/friends';
 import Link from '@/components/Link';
 import Image from '@/components/Image';
+import { Friend } from '@/friends/friends';
+
+interface Props {
+  friends: Friend[]
+}
 
 const FriendCard = ({ title, link, description, avatar }: Friend) => {
   return (
@@ -33,7 +37,7 @@ const FriendCard = ({ title, link, description, avatar }: Friend) => {
   );
 }
 
-export default function FriendLayout() {
+export default function FriendLayout({ friends }: Props) {
   return (
     <>
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
