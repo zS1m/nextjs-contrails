@@ -12,6 +12,11 @@ const nextConfig = {
         hostname: 'chev.contrails.space',
         port: '12650',
         pathname: '/images/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.junglexs.icu',
+        pathname: '/favicon.ico'
       }
     ]
   },
