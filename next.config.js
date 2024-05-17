@@ -16,7 +16,7 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'www.junglexs.icu',
-        pathname: '/favicon.ico'
+        pathname: '/images/**'
       }
     ]
   },
