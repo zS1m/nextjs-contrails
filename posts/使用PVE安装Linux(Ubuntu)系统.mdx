@@ -17,77 +17,77 @@ tags:
 首先我们需要准备好一台安装好PVE的机器以及Linux镜像，我这里使用的是[PVE7.3-6](https://pve.proxmox.com/wiki/Downloads#Proxmox_Virtual_Environment_7.3_.28ISO_Image.29)以及[Ubuntu Server 22.04.1](https://ubuntu.com/download/server)，大家可以自行前往官网或者各大镜像站下载自己想要的版本。
 
 接着将下载好的Ubuntu镜像上传至PVE，可以将镜像名称修改为简短一点的，我这里就不修改了：
-![上传镜像](https://chev.contrails.space:12650/images/2023/04/03/6d7c35913b9873d333233b0510851726.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/ee0851375e9a39330bf68312e0e98b40.png" alt="上传镜像" />
 
 ## 二、创建虚拟机
 
 1. 点击右上角“创建虚拟机”按钮，并勾选弹出框底部的“高级”勾选框，系统会自动分配一个VM ID，可以根据自己的需求修改。给这个虚拟机命名，并根据需要选择是否开机自启，点击“下一步”
-![常规](https://chev.contrails.space:12650/images/2023/04/03/fb2153fc3754f415df7fb9b7196178b1.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/13f2740935326851c2e6adaef7d7521f.png" alt="常规" />
 
 2. 点击下一步，选择“使用CD/DVD光盘镜像文件(ISO)”，存储选择local并选择刚才上传的ISO镜像，其他保持默认即可，点击“下一步”
-![操作系统](https://chev.contrails.space:12650/images/2023/04/04/d71a00b95cef8ea16e07ed744897beac.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/6155a3691449c971c2bcef697b67b796.png" alt="操作系统" />
 
 3. 系统设置保持默认即可，点击“下一步”
-![系统](https://chev.contrails.space:12650/images/2023/04/04/9fb621bdae00eb311d73a8bb3b3603bc.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/1eed18f115b199a367796cb73d6e1590.png" alt="系统" />
 
 4. 磁盘设置保持默认即可，大小可以根据自己的情况修改，我这里大小分配8G，点击“下一步”
-![磁盘](https://chev.contrails.space:12650/images/2023/04/04/efb6462c02ab3a001e955d839dfa65d7.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/ba22c2b58bc1cca525c727bb05e6ca4c.png" alt="磁盘" />
 
 5. CPU设置根据物理机使用的CPU情况设置，如果系统做简单使用可以分配1插槽2核心，我这里分配1插槽4核心，点击“下一步”
-![CPU](https://chev.contrails.space:12650/images/2023/04/04/46d4f02d81ab3d0581f447bfbf2b46a0.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/2ba287cc34caf98d8a7c9be50177b94d.png" alt="CPU" />
 
 6. 内存同样根据实际硬件情况和需求修改，点击“下一步”
-![内存](https://chev.contrails.space:12650/images/2023/04/04/1132c1cae3d7a01571fc2fe26612bc74.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/9d7da1315c4c47ebe4a01fb5a3248b5e.png" alt="内存" />
 
 7. 网络保持默认即可，点击“下一步”
-![网络](https://chev.contrails.space:12650/images/2023/04/04/9c3e1db9a652c9d5cb0c3eacd3469891.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/a0dbe9ec12ec01d316e77b74d4275cb7.png" alt="网络" />
 
 8. 检查好所有配置是否正确，点击“完成”
-![确认](https://chev.contrails.space:12650/images/2023/04/04/79594d2f5047657dfddcf709674ebd32.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/bb2e2cb13a200d346b6df47ed2559c3a.png" alt="确认" />
 
 ## 三、系统安装
 
 1. 语言选择English
-![选择语言](https://chev.contrails.space:12650/images/2023/04/04/853b61c8b4275ec94581448449165217.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/05254516c4e706cbc85c53be8306c874.png" alt="选择语言" />
 
 2. 选择继续且不更新
-![不更新](https://chev.contrails.space:12650/images/2023/04/04/d17b873ebd230f67ee5efdeb3fab5e17.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/3e78b5febec809511c13b4ec335dfe84.png" alt="不更新" />
 
 3. 键盘保持默认的英文布局
-![键盘布局](https://chev.contrails.space:12650/images/2023/04/04/368212004bf0e9d04290e8893fcf628d.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/2d2f2994f4dacf30044cb48d59960b24.png" alt="键盘布局" />
 
 4. 系统类型保持默认，如果希望安装精简版可以选择下方的“minized”版本
-![选择系统类型](https://chev.contrails.space:12650/images/2023/04/04/f4020422b1e7dfc82fb7ce93ac350122.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/34859b16bb2b6d496ed229b903d66f9f.png" alt="选择系统类型" />
 
 5. 网络没有特别需求则保持默认，会自动分配ip
-![网络连接](https://chev.contrails.space:12650/images/2023/04/04/7243a0617ca21f6a89da2a7392af6545.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/994c3e42c0c1a52dfc95bf5f3a7830b0.png" alt="网络连接" />
 
 6. 如果需要配置代理服务器则填写相关信息，没有特殊要求则保持为空
-![网络代理](https://chev.contrails.space:12650/images/2023/04/04/ac5609a8e4aa1f8e7e27bcb75444e932.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/3a1a6d17e3de0946dfaf666cb5079d6a.png" alt="网络代理" />
 
 7. 由于国内网络原因，需要更换一下镜像源以保证软件能够快速更新下载，我这里使用的是[中科大镜像源](https://mirrors.ustc.edu.cn/ubuntu/)
-![镜像源](https://chev.contrails.space:12650/images/2023/04/04/ef1f1ded0cae4e1dbfaea5e69e92d204.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/0f283bd7995e929fdbd47f1a2dd70dc5.png" alt="镜像源" />
 
 8. 存储配置保持默认即可，如果理解各个分区的作用可以自定义 ~~（话说理解的话应该不会来看这个教程吧）~~
-![存储配置](https://chev.contrails.space:12650/images/2023/04/04/c6a2c275baef100a6d8c50eb1394298c.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/38796ec876ea8fd072ee04a40a08317f.png" alt="存储配置" />
 
 9. 这一步是确认空间的划分，上一步默认的话这一步也保持默认就好了
-![确认存储空间](https://chev.contrails.space:12650/images/2023/04/04/19a0847386d59194d1f96b37eb175bc8.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/a0983850083f941c4f353297ecd34d0c.png" alt="确认存储空间" />
 
 10. 全部信息确认完毕后进行安装，选择“Continue”即可
-![确认安装](https://chev.contrails.space:12650/images/2023/04/04/fe9345f533a0dc9d2249c87329133797.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/c27f07dbbc7903dbbc351432bf196f46.png" alt="确认安装" />
 
 11. 对个人档案进行配置，设置自己的昵称、服务器名、用户名、用户密码，全部配置完毕后选择“Done”
-![配置个人档案](https://chev.contrails.space:12650/images/2023/04/04/560a52443594ee70d816639257a88d74.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/1c268b0b6713dcb758495bd91c42f8da.png" alt="配置个人档案" />
 
 12. 接着我们选择安装OpenSSH以保证能够远程安全地连接服务器
-![OpenSSH](https://chev.contrails.space:12650/images/2023/04/08/23fff2b87bf274cab7e93951602bc215.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/494efbcfe104bb51d82b1e2f3b1c4121.png" alt="OpenSSH" />
 
 13. 这一步选择需要安装的工具包，我就不选额外的工具包了，这一步完成后就会进行安装程序
-![package](https://chev.contrails.space:12650/images/2023/04/08/151d346d47209d39cb4f06dba0ee3faf.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/25462a64d05b9a6eebc357448a662fa2.png" alt="package" />
 
 14. 安装完毕后，下方会出现“取消更新并重启”的提示，选择该命令并等待重启，如果等待几分钟发现一直卡在重启界面就在PVE控制台直接强制关机再开机
-![取消更新并重启](https://chev.contrails.space:12650/images/2023/04/08/c48b2dd8649a1ba7d4e024a3e262d4dc.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/8d38dae4f18f9f99462522ad1d38ea75.png" alt="取消更新并重启" />
 
 15. 等待跑完各种命令后，就可以登录了，到此为止，整个安装的流程就结束了。值得注意的一点是，我在第一次安装的时候遇到卡在硬盘的报错问题上，实际上只需要按下回车继续就好了，我被坑惨了，重装了好几次。🤣
-![安装完成并登录](https://chev.contrails.space:12650/images/2023/04/08/47bbbb3b81593550e0c6d36274132b49.png)
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/ca7aaf4a1d04d9a2fdc64890f5a1c20d.png" alt="安装完成并登录" />

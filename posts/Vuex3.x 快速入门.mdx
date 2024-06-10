@@ -23,7 +23,7 @@ tags:
 ## 基础用法
 
 正式开始之前，先看一张官方文档中的图片
-<Image src="https://chev.contrails.space:12650/images/2024/04/20/51b067f6b7dddf78819efebb57f09dc4.png" alt="Vuex" height={600} width={600} />
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/3747777766bc2172c5afa418ca923a92.png" alt="Vuex" height={600} width={600} />
 Vuex 的部分可以看到三个关键词：State、Mutations、Actions，这些要素和视图构成了一个循环，同时这些要素也是 Vuex 的核心概念。
 
 接下来再看一段代码，看不懂没有关系，可以大致看出这是一个 store 对象，对象中存储了上文提到的要素。state 中存在属性，mutations 和 actions 中存储的都是方法
@@ -225,7 +225,7 @@ doneTodos 根据 state 中的 todos 数组过滤了已完成的条目，它的�
 State 章节中提到，使用形如`store.state.count`的方式获取 state 中的属性需要在每个子组件中引入 store，虽然将 store 挂载为全局属性可以解决这一问题，但使用时依然无法避免一遍一遍地调用`this.$store`，且每需要使用一个属性就要调用一次。
 
 因此 Vuex 提供了一系列辅助函数，它们主要用以简化代码
-<Image src="https://chev.contrails.space:12650/images/2024/04/20/39e5fa7371d5e5cf8ffe503ebe04b4cc.png" alt="" height={600} width={600} />
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/ee8eac97934114090ee591fe4a7b5873.png" alt="" height={600} width={600} />
 
 以 state 为例，我们可以使用 mapState 方法将 state 中的属性映射至当前组件的 computed 中，这样不仅可以一次引入多个属性，使用时也更加方便
 ```javascript

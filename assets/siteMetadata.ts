@@ -9,7 +9,7 @@ const siteMetadata = {
   siteUrl: 'https://www.contrails.space',
   siteRepo: 'https://github.com/zS1m/nextjs-contrails',
   siteLogo: '/static/images/logo.png',
-  socialBanner: 'https://chev.contrails.space:12650/images/2023/03/28/44f8adeb18db19af2772e5e6436f31fb.png',
+  socialBanner: 'https://chev.contrails.space:12650/images/2024/06/10/848fc6c438b5fe8321029b6b00d120f7.png',
   mastodon: 'https://mastodon.social/@mastodonuser',
   email: 'chaosspades@gmail.com',
   github: 'https://github.com/zS1m',

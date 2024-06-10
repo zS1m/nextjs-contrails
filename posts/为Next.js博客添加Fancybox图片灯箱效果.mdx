@@ -13,12 +13,12 @@ tags:
 ## 效果展示
 
 ```javascript
-<Image src="https://chev.contrails.space:12650/images/2023/10/16/8f302892898a6f41ae46fed453b451af.jpg" alt="灯箱效果" width={400} height={400} />
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/311aaea660f7b785aa5e58f471c54b7c.jpg" alt="灯箱效果" width={400} height={400} />
 ```
 先看一下这段代码在MDX文件中的效果，点击这张图片👇
-<Image src="https://chev.contrails.space:12650/images/2023/10/16/8f302892898a6f41ae46fed453b451af.jpg" alt="灯箱效果" width={400} height={400} />
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/311aaea660f7b785aa5e58f471c54b7c.jpg" alt="灯箱效果" width={400} height={400} />
 可以看到灯箱提供了缩放、全屏、caption等功能（说起来这不是套娃了吗，笑
-<Image src="https://chev.contrails.space:12650/images/2023/12/04/8d94765d08219337ac4458c2f1fe5690.png" alt="灯箱效果" width={400} height={400} />
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/1122e5be3f6b7f762243b87645ae9bc9.png" alt="灯箱效果" width={400} height={400} />
 
 ## 实现部分
 
@@ -73,6 +73,6 @@ export default Image;
 fancybox将初始化并绑定一个容器，容器中是Next.js提供的`Image`组件，这样可以利用其懒加载、大小优化等特性。直到前几周，我才意识到自己的博客一直没有用上Next.js的图片优化😓
 
 图片的原格式为jpg，大小接近1MB。而现在，它的格式变成了webp，请求中可以观察到大小仅20kB左右，缓存之后就更小了。
-<Image src="https://chev.contrails.space:12650/images/2023/12/04/ff5cadce0e720d3a90b77965704f1cc5.png" alt="图片优化效果" />
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/fb07682198c65358ad1552a8fd09b77e.png" alt="图片优化效果" />
 
 总体来说，我对图片灯箱的最终样式还是比较满意的，后续有时间可能会对图片的位置以及灯箱的详细配置进行更多调整。

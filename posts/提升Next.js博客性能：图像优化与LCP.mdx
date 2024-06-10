@@ -32,17 +32,17 @@ Largest Contentful Paint 考虑的元素类型包括：
 
 话虽如此，我们都明白等待时间越长，用户存留率就越低，所以我还是希望自己的博客能够尽量快地加载出来，为了提供良好的用户体验，应该努力将 LCP 控制在 2.5 秒以内，这下能够看出 6.2 秒到底有多夸张了。
 
-<Image src="https://chev.contrails.space:12650/images/2024/05/08/9d2ae93625e5f16cb99647635aaff835.png" alt="LCP 指标" height={800} width={800} />
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/07cadf0121ccb1363019410aa4705a23.png" alt="LCP 指标" />
 
 ## Lighthouse 性能测试
 
 在正式优化之前，我们需要使用 Chrome 开发者工具中的 Lighthouse 对网站进行测试，因为 Vercel 上的样本较少，而且受服务器稳定性和用户所在国家等因素影响较大。
 
 可以看到，在针对移动端的测试中 LCP 达到了 2.6 秒
-<Image src="https://chev.contrails.space:12650/images/2024/05/08/d3c7d3d63ba049e81c18ca68ed34fddd.png" alt="Lighthouse 测试结果" height={800} width={800} />
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/88d93ba1b2b92a065c800fd96f1b8219.png" alt="Lighthouse 测试结果" />
 
 其实不用看分析结果也能大概猜到是 banner 的问题
-<Image src="https://chev.contrails.space:12650/images/2024/05/08/99d8236df6e1eef15f4b1f89c71258e9.png" alt="LCP 元素" height={800} width={800} />
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/1b81eaf9b708025fafbf58467fbe62a8.png" alt="LCP 元素" />
 
 这张图片的加载时间实在是太长了，明明 Next.js 已经对图片进行过优化了，问题到底出在哪里呢？
 
@@ -75,17 +75,17 @@ import banner from '@/public/images/banner.png';
 ```jsx
 <Image src={banner} alt='banner' priority={true} />
 ```
-<Image src="https://chev.contrails.space:12650/images/2024/05/16/fb0205f1324c44afd4a587a922c78a17.png" alt="Lighthouse 测试结果" height={800} width={800} />
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/5e4e9d9b4277695c02170e6c8e872a8f.png" alt="Lighthouse 测试结果" />
 
 再次使用 Lighthouse 进行测试，可以看到 LCP 降低到了 0.6 秒，但是结果真的像图片中的一样喜人吗？事实上，在改动刚部署时 LCP 甚至一度飙升，后续的测试结果我认为已经受到了缓存的影响
-<Image src="https://chev.contrails.space:12650/images/2024/05/16/ea5c1c87ccbad88e996e14c8ce539bb9.png" alt="Speed Insight 数据" height={800} width={800} />
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/2d3665f8767587414feedf1b99972e82.png" alt="Speed Insight 数据" />
 
 这...这不对吧，明明官网特地说明 LCP 元素应当设置 `priority` 属性，为什么我设置了之后 LCP 反而更高了？
-<Image src="https://chev.contrails.space:12650/images/2024/05/16/ef7063becd14ffecd1718819e50feb59.png" alt="" height={400} width={400} />
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/fa2c8c61fd1529be8d128400610ca8d0.png" alt="" height={400} width={400} />
 
 对此百思不得其解的我直接进行了一波网上冲浪，发现有大量的相关 issue 和帖子反应 `priority` 未生效，甚至有人说还不如使用原生的 `img` 标签，该问题至今依然存在
-<Image src="https://chev.contrails.space:12650/images/2024/05/16/2fef470f2d37c2edf5174ee005da70cc.png" alt="priority 未生效" height={800} width={800} />
-<Image src="https://chev.contrails.space:12650/images/2024/05/16/e5320b19340dfcc0a4eb07cc31c2b19f.png" alt="issue" height={800} width={800} />
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/a33437a23d576eef29b1e40d40baf2e4.png" alt="priority 未生效" />
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/56e16ce68f2555a7b01f78363da38cce.png" alt="issue" />
 
 ## Image 实现
 
@@ -135,7 +135,7 @@ const ImageElement = ({
 }
 ```
 当 `priority` 为 true 时，该组件返回一个常规的 `img` 标签，而 `img` 标签的 `loading` 属性默认值为 `eager`，也就是立即加载图像，不管它是否在可视视口（visible viewport）之外
-<Image src="https://chev.contrails.space:12650/images/2024/05/16/fd3f0e864364fb199128ecd08cf05236.png" alt="img 标签的 loading 属性" height={800} width={800} />
+<Image src="https://chev.contrails.space:12650/images/2024/06/10/10fd7f7cf71f72e144ec9535beedc16b.png" alt="img 标签的 loading 属性" />
 
 从 `<Image>` 标签的源码中看不出 Next.js 是如何进行预加载的，只能知道图像会和使用原生 `img` 的方式一样立即加载，至少在我的测试中，`priority` 未生效的问题是确确实实存在的。
 
