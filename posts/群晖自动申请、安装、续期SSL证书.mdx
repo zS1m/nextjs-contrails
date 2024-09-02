@@ -1,0 +1,75 @@
+---
+title: '群晖自动申请、安装、续期SSL证书'
+date: '2024-09-02 22:13:00'
+url: 'synology-auto-request-install-renew-ssl-certificate'
+summary: '事情的起因是大概几个月前断断续续收到了十几封来自阿里云的邮件，去年申请的 SSL 证书全部到期了。本来我还在琢磨更新那么多证书得折腾多久，然后就看到了阿里云的公告：免费 SSL 证书签发后的有效期统一变更为 3 个月。于是乎陷入了沉思，还是另寻他法吧，最终折腾了一下自动申请、安装、续期 SSL 证书的方法，结果一直拖着没有写这篇文章，直到 NAS 迁移后因为设置错误导致证书再次过期，折腾了一宿后才鼓起劲顺便完成这篇文章'
+tags:
+  - 群晖
+  - 网络
+  - Docker
+draft: true
+---
+
+事情的起因是大概几个月前断断续续收到了十几封来自阿里云的邮件，去年申请的 SSL 证书全部到期了。本来我还在琢磨更新那么多证书得折腾多久，然后就看到了阿里云的公告：免费 SSL 证书签发后的有效期统一变更为 3 个月。
+
+再三斟酌下，我决定还是另寻他法，于是折腾了一下自动申请、安装、续期 SSL 证书的方法，结果一直拖着没有写这篇文章。直到 NAS 迁移后因为设置错误导致证书再次过期，折腾了一宿后才鼓起劲顺便完成这篇文章。
+
+## 前言
+
+首先需要声明一下，我已经提前做了一些准备工作，例如将域名管理托管至 Cloudflare。相比于阿里云，Cloudflare 的功能更加强大，简直就是良心企业。当然这不是必要条件，只是本文所有配置均以 Cloudflare 为例。
+
+本文将涉及以下内容：
+- [ACME](https://github.com/acmesh-official/acme.sh) （用于申请证书的脚本）
+- [ZeroSSL](https://zerossl.com/) （提供免费的 SSL 证书，配合 ACME 食用更佳，可以免费申请泛域名证书）
+- [Cloudflare](https://www.cloudflare.com/) （不必多说，实力强大的云服务提供商）
+
+至于 SSL 是什么，SSL 有什么好处云云便不再赘述，感兴趣的话自行使用搜索引擎了解即可。
+
+## 群晖 Container Manager 安装 acme.sh
+
+首先在 docker 目录下创建 acme 文件夹
+<Image src="https://chev.contrails.space:12650/images/2024/09/02/8a8132051ab0666abed685bb8d03c79f.png" alt="创建 acme 文件夹" />
+
+为其添加读写权限
+<Image src="https://chev.contrails.space:12650/images/2024/09/02/60b1fce1d1b1d269d122f3cca58d2729.png" alt="添加读写权限" />
+
+然后在 Container Manager 注册表中搜索 `neilpang/acme.sh` 并下载
+<Image src="https://chev.contrails.space:12650/images/2024/09/02/ea8cf2db349419ac4489141bb487fbdc.png" alt="Container Manager 搜索镜像" />
+
+运行映像开始安装，容器名称可以自定义，建议勾选 `启动自动重新启动`
+<Image src="https://chev.contrails.space:12650/images/2024/09/02/80c0bbe0429b66db12f166fa209bd91d.png" alt="常规设置" />
+
+将 `/docker/acme` 文件夹映射至 `/acme.sh`
+<Image src="https://chev.contrails.space:12650/images/2024/09/02/fbd27fc771c7c7e4f76a9fd139c8b826.png" alt="存储空间设置" />
+
+### 添加部署信息
+添加部署信息时涉及到群晖的用户名和密码，你可以通过临时管理员的角色来避免提供任何敏感信息；也可以在系统环境变量中设置用户名密码；当然也可以像我一样直接添加在容器的环境变量中，至于选择哪种方式请自行斟酌。
+
+如果你开启了两部验证，那么还需要添加额外的环境变量，我这里提供一份[官方配置文档](https://github.com/acmesh-official/acme.sh/wiki/deployhooks#20-deploy-the-certificate-to-synology-dsm)供大家参考，这里以添加至容器的环境变量中为例。
+
+<Image src="https://chev.contrails.space:12650/images/2024/09/02/e6ef7e01858850001f11f88b6adef7d8.png" alt="群晖环境变量" />
+
+配置项说明：
+```
+SYNO_USERNAME=test - 群晖用户名
+SYNO_PASSWORD=test - 群晖密码
+
+// （可选）
+SYNO_SCHEME="http" - 登录群晖门户的协议，默认 "http"
+SYNO_HOSTNAME="localhost" - 登录群晖门户的地址，默认 "localhost"
+SYNO_PORT="5000" - 登录群晖门户的端口号， 默认 "5000"
+SYNO_CREATE=1 - 不存在证书则创建
+SYNO_CERTIFICATE="" - 证书描述
+```
+
+### 添加 DNS API
+添加 Cloudflare API 同样可以采取两种方法：
+
+其他云服务商 API 可以参考这篇文档：[How to use DNS API](https://github.com/acmesh-official/acme.sh/wiki/dnsapi#dns_cf)
+
+
+### 网络 & 执行命令
+网络使用 `host`，命令填写 `daemon` 以守护进程
+<Image src="https://chev.contrails.space:12650/images/2024/09/02/6d8b0e6700d154a87ac649793ca22b84.png" alt="网络 & 执行命令" />
+
+
