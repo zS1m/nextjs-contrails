@@ -23,13 +23,7 @@ export default function Home({ posts }: Props) {
             最新文章
           </h1>
           <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">
-            {siteMetadata.description} &nbsp;
-            <a
-              className="underline text-primary-500"
-              href="https://contrails.notion.site/2d373fd3a6b14295ac1a1ab67c8699ef"
-            >
-              (I'm seeking for a good job!)
-            </a>
+            {siteMetadata.description}
           </p>
         </div>
         <ul className="divide-y divide-gray-200 dark:divide-gray-700">

@@ -1,22 +1,21 @@
 ---
 title: '群晖自动申请、安装、续期SSL证书'
-date: '2024-09-02 22:13:00'
+date: '2024-10-04 17:18:00'
 url: 'synology-auto-request-install-renew-ssl-certificate'
 summary: '事情的起因是大概几个月前断断续续收到了十几封来自阿里云的邮件，去年申请的 SSL 证书全部到期了。本来我还在琢磨更新那么多证书得折腾多久，然后就看到了阿里云的公告：免费 SSL 证书签发后的有效期统一变更为 3 个月。于是乎陷入了沉思，还是另寻他法吧，最终折腾了一下自动申请、安装、续期 SSL 证书的方法，结果一直拖着没有写这篇文章，直到 NAS 迁移后因为设置错误导致证书再次过期，折腾了一宿后才鼓起劲顺便完成这篇文章'
 tags:
   - 群晖
   - 网络
   - Docker
-draft: true
 ---
 
 事情的起因是大概几个月前断断续续收到了十几封来自阿里云的邮件，去年申请的 SSL 证书全部到期了。本来我还在琢磨更新那么多证书得折腾多久，然后就看到了阿里云的公告：免费 SSL 证书签发后的有效期统一变更为 3 个月。
 
 再三斟酌下，我决定还是另寻他法，于是折腾了一下自动申请、安装、续期 SSL 证书的方法，结果一直拖着没有写这篇文章。直到 NAS 迁移后因为设置错误导致证书再次过期，折腾了一宿后才鼓起劲顺便完成这篇文章。
 
-## 前言
+## 一、前言
 
-首先需要声明一下，我已经提前做了一些准备工作，例如将域名管理托管至 Cloudflare。相比于阿里云，Cloudflare 的功能更加强大，简直就是良心企业。当然这不是必要条件，只是本文所有配置均以 Cloudflare 为例。
+首先需要声明，我已经提前做了一些准备工作，例如将域名管理托管至 Cloudflare。相比于阿里云，Cloudflare 的功能更加强大，简直就是良心企业。当然这不是必要条件，只是本文所有配置均以 Cloudflare 为例。
 
 本文将涉及以下内容：
 - [ACME](https://github.com/acmesh-official/acme.sh) （用于申请证书的脚本）
@@ -25,7 +24,7 @@ draft: true
 
 至于 SSL 是什么，SSL 有什么好处云云便不再赘述，感兴趣的话自行使用搜索引擎了解即可。
 
-## 群晖 Container Manager 安装 acme.sh
+## 二、群晖 Container Manager 安装 acme.sh
 
 首先在 docker 目录下创建 acme 文件夹
 <Image src="https://chev.contrails.space:12650/images/2024/09/02/8a8132051ab0666abed685bb8d03c79f.png" alt="创建 acme 文件夹" />
@@ -63,13 +62,72 @@ SYNO_CERTIFICATE="" - 证书描述
 ```
 
 ### 添加 DNS API
-添加 Cloudflare API 同样可以采取两种方法：
+添加 Cloudflare API 同样可以采取两种方法，其他云服务商 API 可以参考这篇文档：[How to use DNS API](https://github.com/acmesh-official/acme.sh/wiki/dnsapi#dns_cf)
 
-其他云服务商 API 可以参考这篇文档：[How to use DNS API](https://github.com/acmesh-official/acme.sh/wiki/dnsapi#dns_cf)
+#### 方法一：使用 restrictive API （推荐）
+登录 Cloudflare，在我的个人资料页面创建 API 令牌
+<Image src="https://chev.contrails.space:12650/images/2024/09/04/4bc06b0e4d368f9b7b40bed5ab34feff.png" alt="创建令牌" />
 
+使用 `编辑区域 DNS` 模板
+<Image src="https://chev.contrails.space:12650/images/2024/10/04/228a5dd938f4f700fba0f258830d05d4.png" alt="编辑区域 DNS" />
+
+按照图片所示填写，区域选择对应域名，点击继续并创建令牌。此令牌仅出现一次，后续无法再次查询，所以记得保存下来
+<Image src="https://chev.contrails.space:12650/images/2024/10/04/3584d7e73fb0c5a83b089a6da3a8e752.png" alt="用户 API 令牌" />
+
+除了 Token 以外，还需要 zone ID。在主页选择网站后，下拉即可看到对应 zone ID
+<Image src="https://chev.contrails.space:12650/images/2024/10/04/5f2472bf027e8edbb8149898435a36a2.png" alt="zone ID" />
+
+在 docker 环境变量中，添加 `CF_Token` 和 `CF_Zone_ID` 两个字段，值分别是上方获取到的令牌和 zone ID
+<Image src="https://chev.contrails.space:12650/images/2024/09/02/e5d9d89ffe9f17c4b8dff2f4f9d4b863.png" alt="DNS API" />
+
+
+#### 方法二：使用 global API （不推荐）
+这个方法有一定的安全隐患，所以不推荐使用，优点就是简单快捷。依然是刚才创建 API 令牌的位置，下方点击输入密码后查看 Global API Key
+<Image src="https://chev.contrails.space:12650/images/2024/10/04/17213ccdbe57ce7983580bab1ed2512e.png" alt="Global API Key" />
+
+此时在 docker 环境变量中，添加 `CF_Key` 和 `CF_Email` 两个字段，值分别是上方获取到的 Global API Key 和 Cloudflare 账户邮箱地址
 
 ### 网络 & 执行命令
-网络使用 `host`，命令填写 `daemon` 以守护进程
+网络使用 `host`，命令填写 `daemon` 以守护进程，最后保存并启动容器
 <Image src="https://chev.contrails.space:12650/images/2024/09/02/6d8b0e6700d154a87ac649793ca22b84.png" alt="网络 & 执行命令" />
 
+## 三、自动申请、安装、续期证书
+ZeroSSL 的证书有效期是 90 天，因此需要定期申请证书，这里使用群晖的计划任务来完成
 
+### 创建并上传脚本
+本地创建 fetch.sh 脚本文件并上传至群晖 docker/acme 目录下，第一行代码是申请证书，第二行是将证书部署至群晖。注意将 `邮箱地址` 改为 Cloudflare 账户邮箱，将 `example.com` 更改为自己的域名
+```shell
+#!/bin/bash
+
+docker exec acme acme.sh --force --log --issue -m 邮箱地址 --server zerossl --dns dns_cf --dnssleep 120 -d example.com -d *.example.com
+
+docker exec acme acme.sh --deploy -d example.com -d *.example.com --deploy-hook synology_dsm
+```
+
+### 添加计划任务
+打开群晖控制面板，选择 `任务计划 -> 新增 -> 计划的任务 -> 用户定义的脚本`，任务名称随意，用户账号选择 root
+<Image src="https://chev.contrails.space:12650/images/2024/10/04/b3e9de699fa20a994b6bf6dda64b044c.png" alt="编辑任务 - 常规" />
+
+时间随便选一个，选择`每月重复`
+<Image src="https://chev.contrails.space:12650/images/2024/10/04/cc4bb6961571f8b74650a2be53d1411a.png" alt="编辑任务 - 计划" />
+
+根据需求选择是否需要通过邮件发送运行详情，运行命令处填写如下脚本，该脚本会将上方创建的脚本运行日志保存为 /docker/acme 下的 log.txt 文件
+```shell
+bash /volume1/docker/acme/fetch.sh >>/volume1/docker/acme/log.txt 2>&1
+```
+<Image src="https://chev.contrails.space:12650/images/2024/10/04/ad775a1737d51f20b0fc5fd468368224.png" alt="编辑任务 - 任务设置" />
+
+点击确定保存后，右键该任务并运行
+<Image src="https://chev.contrails.space:12650/images/2024/10/04/36f2f8c78b67d71ada4425942d4e9cea.png" alt="运行任务" />
+
+如果没有出错的话，可以在 `控制面板 -> 安全性 -> 证书` 中看到申请的证书，那么到这里就大功告成了！如果发现并没有新的证书，则可以查看日志排查对应的错误
+<Image src="https://chev.contrails.space:12650/images/2024/10/04/6be6eef13119243f0bd034a9d10d777a.png" alt="证书" />
+
+
+---
+### 参考资料
+
+- [群晖自带的 Let's Encrypt SSL 证书续签经常抽风？试试这个：ZeroSSL](https://sspai.com/post/84863)
+- [acmesh-official wiki 说明](https://github.com/acmesh-official/acme.sh/wiki/%E8%AF%B4%E6%98%8E)
+- [acmesh-official wiki dnsapi](https://github.com/acmesh-official/acme.sh/wiki/dnsapi#dns_cf)
+- [acmesh-official wiki deployhooks](https://github.com/acmesh-official/acme.sh/wiki/deployhooks#20-deploy-the-certificate-to-synology-dsm)
