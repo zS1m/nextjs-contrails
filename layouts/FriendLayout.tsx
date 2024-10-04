@@ -9,8 +9,7 @@ interface Props {
 const FriendCard = ({ title, link, description, avatar }: Friend) => {
   return (
     <Link href={link}>
-      {/* TODO DARK MODE */}
-      <div className="overflow-hidden bg-white shadow-md rounded-xl h-full">
+      <div className="overflow-hidden bg-white dark:bg-gray-700 shadow-md rounded-xl h-full">
         <div className="flex items-center gap-x-4 p-4">
           <div>
             {avatar && (
@@ -25,10 +24,10 @@ const FriendCard = ({ title, link, description, avatar }: Friend) => {
             }
           </div>
           <section>
-            <h3 className="text-lg font-bold text-gray-900">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
               {title}
             </h3>
-            <p className="mt-1 text-sm text-gray-600">
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
               {description}
             </p>
           </section>
