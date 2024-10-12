@@ -10,7 +10,7 @@ import ScrollTopAndComment from '@/components/ScrollTopAndComment';
 import ProgressBar from '@/components/ProgressBar';
 import Comment from '@/components/Comment';
 import { FaRegCalendarAlt } from 'react-icons/fa';
-import { FaRegClock } from 'react-icons/fa6';
+import { FaRegHourglassHalf, FaFire } from 'react-icons/fa6';
 
 const postDateTemplate: Intl.DateTimeFormatOptions = {
   weekday: 'long',
@@ -54,12 +54,21 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                 <PageTitle>{title}</PageTitle>
               </div>
               <dl className="space-y-10">
-                <div>
+                <div className="flex justify-center gap-x-4">
+                  {/* 阅读时长 */}
                   <dt className="sr-only">Reading time</dt>
                   <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
                     <span className="inline-flex items-center">
-                      <FaRegClock className="mr-1.5"/>
+                      <FaRegHourglassHalf className="mr-1.5"/>
                       {readingTime.text}
+                    </span>
+                  </dd>
+                  {/* 阅读量 */}
+                  <dt className="sr-only">Page view</dt>
+                  <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
+                    <span className="inline-flex items-center">
+                      <FaFire className="mr-1.5"/>
+                      <span className="waline-pageview-count">-</span>
                     </span>
                   </dd>
                 </div>
@@ -160,7 +169,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
             className="pt-8 text-center text-gray-700 dark:text-gray-300"
             id="comment"
           >
-            <Comment />
+            <Comment serverURL={process.env.COMMENT_SERVER_URL!} />
           </div>
         </div>
       </article>

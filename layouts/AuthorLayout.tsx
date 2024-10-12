@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default function AuthorLayout({ children, content }: Props) {
-  const { name, avatar, occupation, company, email, linkedin, github } = content
+  const { name, avatar, occupation, company, email, github } = content
 
   return (
     <>
@@ -47,7 +47,7 @@ export default function AuthorLayout({ children, content }: Props) {
           className="pb-8 pt-8 text-center text-gray-700 dark:text-gray-300"
           id="comment"
         >
-          <Comment />
+          <Comment serverURL={process.env.COMMENT_SERVER_URL!} />
         </div>
       </div>
     </>

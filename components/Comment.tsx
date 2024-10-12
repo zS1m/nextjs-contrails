@@ -1,25 +1,37 @@
 'use client'
 
-import { useEffect } from 'react';
-import { init } from '@waline/client';
+import { useEffect, useRef } from 'react';
+import { init, type WalineInstance, type WalineInitOptions } from '@waline/client';
 import '@waline/client/dist/waline.css';
 
-const WalineComment = () => {
+export type WalineOptions = Omit<WalineInitOptions, 'el'>;
+
+const WalineComment = (props: WalineOptions) => {
+  const walineInstanceRef = useRef<WalineInstance | null>(null);
+  const containerRef = useRef<HTMLDivElement>();
+
   useEffect(() => {
-    init({
-      el: '#waline',
+    walineInstanceRef.current = init({
+      ...props,
+      el: containerRef.current,
       dark: '.dark',
-      serverURL: 'https://waline.contrails.space/',
       emoji: [
         'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/weibo',
         'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/alus'
       ],
-      requiredMeta: ['nick']
-      // 此处可以配置更多配置，参考Waline官方文档...
+      requiredMeta: ['nick'],
+      pageview: true, // 浏览量统计
     });
+
+    return () => walineInstanceRef.current?.destroy();
   }, []);
 
-  return <div id="waline" />;
+  useEffect(() => {
+    walineInstanceRef.current?.update(props);
+  }, [props]);
+
+  // @ts-ignore
+  return <div id="waline" ref={containerRef} />;
 };
 
 export default WalineComment;
