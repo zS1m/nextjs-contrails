@@ -8,12 +8,12 @@ tags:
   - Axios
 ---
 
-# 前言
+## 前言
 
 日常进行开发工作时，经常会遇到下载文件的场景，通常用户点击下载后需要禁止重复点击下载以保证不会发送大量请求，按钮禁用时再添加一个loading状态提供更好的视觉体验。
 单个页面内实现非常简单：设置一个loading变量，在用户进行操作前后分别设置按钮的loading状态和disabled状态即可。但是1个页面写一次，10个页面、100个页面呢？因此我们需要一种通用的方法去解决这个问题，自然而然也就想到了Vue指令。
 
-# 实现思路
+## 实现思路
 
 > 除了核心功能默认内置的指令 (v-model 和 v-show)，Vue 也允许注册自定义指令。注意，在 Vue2.0 中，代码复用和抽象的主要形式是组件。然而，有的情况下，你仍然需要对普通 DOM 元素进行底层操作，这时候就会用到自定义指令
 
@@ -21,9 +21,9 @@ tags:
 1. axios中，文件下载时向全局添加flag变量代表下载状态
 2. 指令中，当检测到文件下载时禁用按钮并添加loading状态，下载完毕时恢复原状
 
-# 实现过程
+## 实现过程
 
-## 一、全局上报下载进度
+### 一、全局上报下载进度
 
 定义一个函数用来向全局上报下载进度，当文件长度可计算时，定义一个名为`isFileDownloading`的flag，用于判断当前文件是否下载完毕：
 ```javascript
@@ -60,7 +60,7 @@ if (conf.responseType === 'blob') {
 }
 ```
 
-## 二、监听全局变量并更新状态
+### 二、监听全局变量并更新状态
 
 使用Vue指令，使用定时器轮询上述步骤创建的flag，根据flag修改按钮状态，主要代码：
 ```javascript
@@ -142,7 +142,7 @@ export default {
 };
 ```
 
-# 使用方法
+## 使用方法
 在按钮中使用指令`v-prevent-re-download`，当点击按钮时触发下载接口：
 ```
 <el-button v-prevent-re-download type="primary" @click="onDownload">下载</el-button>
@@ -152,7 +152,7 @@ export default {
 <Image src="https://chev.contrails.space:12650/images/2024/06/10/68f1ea5386b0ed83fadfe8e0befa2ea2.png" alt="按钮状态" />
 <Image src="https://chev.contrails.space:12650/images/2024/06/10/c3dd861dfd4f74740a4f6fd94d0c9767.png" alt="控制台信息" />
 
-# 缺陷
+## 缺陷
 这个方法有一些瑕疵：
 1. 代码有一定入侵性，对请求封装做了一定的修改，而且当该请求本身已经设置了`isFileDownloading`时就会出问题，因此我跳过了本身已设置该属性的接口
 2. Loading状态的样式还有些问题，plain属性的按钮和表格操作列按钮都无法显示，因为这个圈是白色的，这个根据需要自行修改吧😂
