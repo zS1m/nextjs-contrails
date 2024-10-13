@@ -38,7 +38,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "@waline/client": "^2.15.8",
+    "@waline/client": "^3.3.2",
     "autoprefixer": "^10",
     "postcss": "^8",
     "tailwindcss": "^3",

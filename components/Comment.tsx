@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { init, type WalineInstance, type WalineInitOptions } from '@waline/client';
-import '@waline/client/dist/waline.css';
+import '@waline/client/style';
 
 export type WalineOptions = Omit<WalineInitOptions, 'el'>;
 
@@ -20,7 +20,7 @@ const WalineComment = (props: WalineOptions) => {
         'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/alus'
       ],
       requiredMeta: ['nick'],
-      pageview: true, // 浏览量统计
+      pageview: process.env.NODE_ENV === 'production' // 浏览量统计
     });
 
     return () => walineInstanceRef.current?.destroy();
