@@ -1,0 +1,46 @@
+---
+title: '群晖 Docker 快速部署 DDNS-Go：浅谈 DNS 与 DDNS'
+date: '2025-05-31 16:03:00'
+url: 'synology-docker-quick-deploy-ddns-go-intro-to-dns-and-ddns'
+summary: 'TP-LINK 的家用路由器虽然既没有灵活丰富的插件，也没有自由可配的固件，但相对来说，它的配置和使用都比较省心。尤其是它提供的 DDNS 功能，只需要在管理页面注册一个以 `tpddns.cn` 结尾的域名即可使用，当然域名也是免费的。这突如其来的停止服务让我痛心疾首，因为这可能导致我部署的很多服务无法在外网访问。好在此前帮朋友解决服务器外网访问的问题时了解到了一个叫 `DDNS-Go` 的项目，趁此机会将它部署在群晖上，顺便还能够复习一下 DNS 相关的网络知识，此乃一举两得'
+tags:
+  - 群晖
+  - Docker
+  - 网络
+draft: true
+---
+
+距离上一次更新博客似乎已经快一年了...虽然我想这样说，但实际上只是我记错更新时间了 ~~（看来我还是挺勤劳的）~~。好吧，我是有借口的，听我狡辩。
+
+在 24 年 10 月到 25 年 2 月，我一直忙于将脑中的想法变为现实，也就是这个项目👉[轻阅社：一个一站式订阅轻小说与漫画新动态的追踪平台](https://qingyueshe.com/)。但目前它还是一个半成品，呃...让我们坦诚一点...它还是一个“垃圾”，但是有句话说得好：“先做个垃圾出来”，别管它好不好用，起码已经是有雏型了。接着在 3 月到 5 月，由于沉迷某款不搜不打不撤的游戏，加上工作上的职责发生了一些变更，导致我的时间被狠狠瓜分，所以新文章才拖了这么久。
+
+说起更新的契机，在 2 月 14 日，我收到一封来自 TP-LINK 的邮件，被告知 TPDDNS 服务将于 2025 年 6 月 30 日正式停运：
+<Image src="https://chev.contrails.space:12650/images/2025/05/31/5627687b71481c32a2a0265e60dff033.png" alt="DDNS停止服务" />
+
+这对我这种懒人党来说简直就是晴天霹雳，TP-LINK 的家用路由器虽然既没有灵活丰富的插件，也没有自由可配的固件，但相对来说，它的配置和使用都比较省心。尤其是它提供的 DDNS 功能，只需要在管理页面注册一个以 `tpddns.cn` 结尾的域名即可使用，当然域名也是免费的。这突如其来的停止服务让我痛心疾首，因为这可能导致我部署的很多服务无法在外网访问。好在此前帮朋友解决服务器外网访问的问题时了解到了一个叫 `DDNS-Go` 的项目，趁此机会将它部署在群晖上，顺便还能够复习一下 DNS 相关的网络知识，此乃一举两得。
+
+## 群晖 Docker 部署 DDNS-Go
+
+我们先从 DDNS-Go 的部署说起，步骤很简单。首先在镜像仓库中下载 `jeessy/ddns-go` 并运行镜像，在 docker 目录下新建 `ddns-go` 目录并将该目录映射至 `/root/` 目录：
+<Image src="https://chev.contrails.space:12650/images/2025/05/31/bc4890afcb5b730edab0bd7e60f95d63.png" alt="映射存储空间" />
+
+然后将网络切换至 `host` 模式，注意命令中的 `-l` 参数，如果需要自定义容器外映射的端口，则在此处进行修改：
+<Image src="https://chev.contrails.space:12650/images/2025/05/31/e28141e7dfda6d8773d17209eb0afc7e.png" alt="设置网络和端口" />
+
+检查完毕后运行该容器，到这里部署就算完成了，接下来需要进行一些简单的配置，才能够将域名指向当前的机器。以 Cloudflare 为例，登录后[创建令牌](https://dash.cloudflare.com/profile/api-tokens)，选择 `编辑区域 DNS` -> `使用模板`，在 `区域资源` 中选择希望用于 DDNS 的域名：
+<Image src="https://chev.contrails.space:12650/images/2025/05/31/d89425ad154c90308169a06bd37c58ae.png" alt="创建令牌" />
+
+将生成的令牌填至 DDNS-Go 的 Token 区域：
+<Image src="https://chev.contrails.space:12650/images/2025/05/31/0516e3454488b59a748659a71bf159e6.png" alt="填写 Token" />
+
+根据需求选择使用 IPv4 或 IPv6 地址以及希望解析的域名（支持泛域名）：
+<Image src="https://chev.contrails.space:12650/images/2025/05/31/35370be5df045439456f47890ff51525.png" alt="配置域名" />
+
+点击保存后，理应能够在 Cloudflare 的 DNS 解析记录中发现 DDNS-Go 自动添加的记录：一条或多条域名指向本机 IPv4/IPv6 地址。
+
+## DNS 和 DDNS 是什么
+
+---
+### 参考资料
+
+- [浅谈从输入 URL 到页面展现发生了什么](https://github.com/yd160513/blog/issues/17)
