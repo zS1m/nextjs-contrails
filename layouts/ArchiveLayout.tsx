@@ -34,6 +34,8 @@ export default function AuthorLayout({ posts }: Props) {
   // sorted posts by year
   const sortedKeys = Object.keys(postsSortedByYear).sort((a, b) => b.localeCompare(a));
 
+  const truncateLength = locale === 'zh' ? 180 : 200;
+
   return (
     <>
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -64,7 +66,7 @@ export default function AuthorLayout({ posts }: Props) {
                               {post.title}
                             </Link>
                           </h3>
-                          <p className="prose max-w-none text-gray-500 dark:text-gray-400">{truncateSummary(post.summary)}</p>
+                          <p className="prose max-w-none text-gray-500 dark:text-gray-400">{truncateSummary(post.summary, truncateLength, locale)}</p>
                         </div>
                       </div>
                     ))

@@ -22,6 +22,8 @@ export default function Home({ posts }: Props) {
   const filteredPosts = posts.filter(post => post.lang === locale);
   const slicedPosts = filteredPosts.slice(0, MAX_DISPLAY);
 
+  const truncateLength = locale === 'zh' ? 160 : 180;
+
   return (
     <>
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -66,7 +68,7 @@ export default function Home({ posts }: Props) {
                           </div>
                         </div>
                         <div className="prose max-w-none text-gray-500 dark:text-gray-400">
-                          {truncateSummary(summary)}
+                          {truncateSummary(summary, truncateLength, locale)}
                         </div>
                       </div>
                       <div className="text-base font-medium leading-6">

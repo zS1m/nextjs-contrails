@@ -18,14 +18,28 @@ export function sortPosts(posts: Post[]) {
   return posts.sort((a, b) => a.date < b.date ? 1 : -1);
 }
 
-export function truncateSummary(text?: string, maxLength = 160) {
+export function truncateSummary(
+  text?: string,
+  maxLength = 160,
+  locale?: string,
+) {
   if (!text) {
     return '';
-  } else if (text.length <= maxLength) {
-    return text;
-  } else {
-    return text.slice(0, maxLength) + '...';
   }
+
+  if (text.length <= maxLength) {
+    return text;
+  }
+
+  if (locale === 'en') {
+    // 英文：在 maxLength 之前，找最后一个空格
+    const truncated = text.slice(0, maxLength);
+    const lastSpace = truncated.lastIndexOf(' ');
+    return (lastSpace > 0 ? truncated.slice(0, lastSpace) : truncated) + '…';
+  }
+
+  // 中文：直接按字符截断
+  return text.slice(0, maxLength) + '…';
 }
 
 interface CountWordsOptions {
