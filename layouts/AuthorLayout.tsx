@@ -46,12 +46,12 @@ export default function AuthorLayout({ children, content }: Props) {
             {children}
           </div>
         </div>
-        {process.env.NEXT_PUBLIC_COMMENT_SERVER_URL && (
+        {process.env.COMMENT_SERVER_URL && (
           <div
             className="pb-8 pt-8 text-center text-gray-700 dark:text-gray-300"
             id="comment"
           >
-            <Comment serverURL={process.env.NEXT_PUBLIC_COMMENT_SERVER_URL} />
+            <Comment serverURL={process.env.COMMENT_SERVER_URL} />
           </div>
         )}
       </div>

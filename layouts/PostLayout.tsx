@@ -170,12 +170,12 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
               </div>
             </footer>
           </div>
-          {process.env.NEXT_PUBLIC_COMMENT_SERVER_URL && (
+          {process.env.COMMENT_SERVER_URL && (
             <div
               className="pt-8 text-center text-gray-700 dark:text-gray-300"
               id="comment"
             >
-              <Comment serverURL={process.env.NEXT_PUBLIC_COMMENT_SERVER_URL} />
+              <Comment serverURL={process.env.COMMENT_SERVER_URL} />
             </div>
           )}
         </div>
