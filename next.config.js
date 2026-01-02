@@ -1,4 +1,8 @@
-const { withContentlayer } = require('next-contentlayer')
+const { withContentlayer } = require('next-contentlayer2');
+const createNextIntlPlugin = require('next-intl/plugin');
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -29,4 +33,6 @@ const nextConfig = {
   }
 }
 
-module.exports = withContentlayer(nextConfig)
+const withNextIntl = createNextIntlPlugin();
+
+module.exports = withBundleAnalyzer(withNextIntl(withContentlayer(nextConfig)));

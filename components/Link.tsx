@@ -1,6 +1,7 @@
-import Link from 'next/link';
-import type { LinkProps } from 'next/link';
-import { AnchorHTMLAttributes } from 'react';
+import { AnchorHTMLAttributes, ComponentProps } from 'react';
+import { Link } from '@/i18n/navigation';
+
+type LinkProps = ComponentProps<typeof Link>;
 
 const CustomLink = ({ href, ...rest }: LinkProps & AnchorHTMLAttributes<HTMLAnchorElement>) => {
   const isInternalLink = href && href.startsWith('/');

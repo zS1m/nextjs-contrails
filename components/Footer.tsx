@@ -1,8 +1,11 @@
 import Link from '@/components/Link';
 import siteMetadata from '@/assets/siteMetadata';
 import SocialIcon from '@/assets/social-icons';
+import { useTranslations } from 'next-intl';
 
 export default function Footer() {
+  const t = useTranslations('Meta');
+
   return (
     <footer>
       <div className="mt-16 flex flex-col items-center">
@@ -12,11 +15,11 @@ export default function Footer() {
           <SocialIcon kind="juejin" href={siteMetadata.juejin} size={6} />
         </div>
         <div className="mb-2 flex space-x-2 text-sm text-gray-500 dark:text-gray-400">
-          <div>{siteMetadata.author}</div>
+          <div>{t('author')}</div>
           <div>{` • `}</div>
           <div>{`© ${new Date().getFullYear()}`}</div>
           <div>{` • `}</div>
-          <Link href="/">{siteMetadata.headerTitle}</Link>
+          <Link href="/">{t('header_title')}</Link>
         </div>
         <div className="mb-8 text-sm text-gray-500 dark:text-gray-400">
           <Link href="https://github.com/timlrx/tailwind-nextjs-starter-blog">

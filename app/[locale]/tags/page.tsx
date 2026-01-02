@@ -1,15 +1,27 @@
+import type { Metadata } from 'next';
+
 import Link from '@/components/Link';
 import Tag from '@/components/Tag';
 import { slug } from 'github-slugger';
-import allTags from '@/lib/tags';
-import { genPageMetadata } from '@/lib/seo';
+import { allPosts } from 'contentlayer/generated';
+import { getAllTags } from '@/lib/tags';
+import { buildAlternates } from '@/lib/seo';
+import { getTranslations } from 'next-intl/server';
 
-export const metadata = genPageMetadata({ title: '标签' })
+interface Props {
+  params: {
+    locale: string;
+  };
+}
 
-export default async function Page() {
-  const tagCounts = allTags;
+export default function Page({ params }: Props) {
+  const { locale } = params;
+  const filteredPosts = allPosts.filter(post => post.lang === locale);
+
+  const tagCounts = getAllTags(filteredPosts);
   const tagKeys = Object.keys(tagCounts)
   const sortedTags = tagKeys.sort((a, b) => tagCounts[b] - tagCounts[a])
+
   return (
     <>
       <div className="flex flex-col items-start justify-start divide-y divide-gray-200 dark:divide-gray-700 md:mt-24 md:flex-row md:items-center md:justify-center md:space-x-6 md:divide-y-0">
@@ -38,4 +50,23 @@ export default async function Page() {
       </div>
     </>
   )
+}
+
+export async function generateMetadata({
+  params,
+}: Readonly<{
+  params: Promise<{ locale: string }>
+}>): Promise<Metadata> {
+  const { locale } = await params;
+
+  const t = await getTranslations({ locale, namespace: 'Tags' });
+  const m = await getTranslations({ locale, namespace: 'Meta' });
+
+  return {
+    title: `${t('title')} - ${m('title')}`,
+    alternates: buildAlternates({
+      locale,
+      pathname: '/tags',
+    }),
+  };
 }

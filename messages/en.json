@@ -1,0 +1,65 @@
+{
+  "Common": {
+    "prev_page": "Previous",
+    "next_page": "Next"
+  },
+  "Main": {
+    "title": "Latest",
+    "read_more": "Read More",
+    "all_posts": "All Posts"
+  },
+  "Nav": {
+    "home": "Home",
+    "posts": "Blog",
+    "tags": "Tags",
+    "archives": "Archives",
+    "friends": "Friends",
+    "about": "About"
+  },
+  "Footer": {
+    "author": "zS1m"
+  },
+  "ListLayout": {
+    "all_posts": "All Posts"
+  },
+  "ArchiveLayout": {
+    "title": "Archives"
+  },
+  "FriendLayout": {
+    "title": "Friends"
+  },
+  "AuthorLayout": {
+    "title": "About"
+  },
+  "PostLayout": {
+    "author": "Author",
+    "tags": "Tags",
+    "prev_article": "Previous Article",
+    "next_article": "Next Article",
+    "back_to_blog": "Back to the blog"
+  },
+  "Meta": {
+    "title": "zS1m's Blog",
+    "description": "Notes on software engineering, systems, and production trade-offs",
+    "header_title": "Contrails",
+    "author": "zS1m"
+  },
+  "Home": {
+    "title": "Contrails"
+  },
+  "About": {
+    "title": "About"
+  },
+  "Archives": {
+    "title": "Archives"
+  },
+  "Friends": {
+    "title": "Friends"
+  },
+  "Blog": {
+    "title": "Blog"
+  },
+  "Tags": {
+    "title": "Tags"
+  }
+}

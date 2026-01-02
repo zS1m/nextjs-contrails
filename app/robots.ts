@@ -1,5 +1,4 @@
 import { MetadataRoute } from 'next';
-import siteMetadata from '@/assets/siteMetadata';
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -7,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/'
     },
-    sitemap: `${siteMetadata.siteUrl}/sitemap.xml`
+    sitemap: `${process.env.NEXT_PUBLIC_SITE_URL}/sitemap.xml`
   }
 }

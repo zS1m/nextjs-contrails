@@ -1,5 +1,6 @@
+import type { Post } from 'contentlayer/generated';
+
 import { slug } from 'github-slugger';
-import { allPosts, type Post } from 'contentlayer/generated';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -19,7 +20,3 @@ export function getAllTags(allPosts: Post[]) {
   });
   return tagCount;
 }
-
-const allTags = getAllTags(allPosts);
-
-export default allTags;

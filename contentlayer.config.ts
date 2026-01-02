@@ -1,4 +1,4 @@
-import { defineDocumentType, makeSource, ComputedFields } from 'contentlayer/source-files';
+import { defineDocumentType, makeSource, ComputedFields } from 'contentlayer2/source-files';
 import siteMetadata from './assets/siteMetadata';
 import rehypePrismPlus from 'rehype-prism-plus';
 import { remarkCodeTitles, remarkExtractFrontmatter, remarkImgToJsx } from 'pliny/mdx-plugins/index.js';
@@ -7,7 +7,6 @@ import remarkMath from 'remark-math';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypePresetMinify from 'rehype-preset-minify';
-import { Pluggable } from 'unified';
 import rehypeKatex from 'rehype-katex';
 import { countWords } from './lib/utils';
 
@@ -24,12 +23,16 @@ const computedFields: ComputedFields = {
   filePath: {
     type: 'string',
     resolve: (doc) => doc._raw.sourceFilePath,
-  }
+  },
+  lang: {
+    type: 'string',
+    resolve: (doc) => doc._raw.flattenedPath.split('/')[1],
+  },
 };
 
 export const Post = defineDocumentType(() => ({
   name: 'Post',
-  filePathPattern: `posts/**/*.mdx`,
+  filePathPattern: `posts/{zh,en}/**/*.mdx`,
   contentType: 'mdx',
   fields: {
     title: { type: 'string', required: true },
@@ -57,7 +60,7 @@ export const Post = defineDocumentType(() => ({
         dateModified: doc.lastmod || doc.date,
         description: doc.summary,
         image: doc.images ? doc.images[0] : siteMetadata.socialBanner,
-        url: `${siteMetadata.siteUrl}/${doc._raw.flattenedPath}`
+        url: `${process.env.NEXT_PUBLIC_SITE_URL}/${doc._raw.flattenedPath}`
       }),
     }
   },
@@ -65,7 +68,7 @@ export const Post = defineDocumentType(() => ({
 
 export const Author = defineDocumentType(() => ({
   name: 'Author',
-  filePathPattern: 'authors/**/*.mdx',
+  filePathPattern: 'authors/{zh,en}/**/*.mdx',
   contentType: 'mdx',
   fields: {
     name: { type: 'string', required: true },
@@ -98,7 +101,7 @@ export default makeSource({
       rehypeAutolinkHeadings,
       rehypeKatex,
       [rehypePrismPlus, { defaultLanguage: 'js', ignoreMissing: true, showLineNumbers: true }],
-      rehypePresetMinify as Pluggable<any[]>
+      rehypePresetMinify
     ]
   }
 })

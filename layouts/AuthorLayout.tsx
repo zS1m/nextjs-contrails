@@ -3,6 +3,7 @@ import type { Author } from 'contentlayer/generated';
 import SocialIcon from '@/assets/social-icons';
 import Image from '@/components/Image';
 import Comment from '@/components/Comment';
+import { useTranslations } from 'next-intl';
 
 interface Props {
   children: ReactNode
@@ -10,14 +11,16 @@ interface Props {
 }
 
 export default function AuthorLayout({ children, content }: Props) {
-  const { name, avatar, occupation, company, email, github } = content
+  const t = useTranslations('AuthorLayout');
+
+  const { name, avatar, occupation, company, email, github } = content;
 
   return (
     <>
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
         <div className="space-y-2 pb-8 pt-6 md:space-y-5">
           <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
-            关于
+            {t('title')}
           </h1>
         </div>
         <div className="items-start space-y-2 xl:grid xl:grid-cols-3 xl:gap-x-8 xl:space-y-0">
@@ -43,12 +46,12 @@ export default function AuthorLayout({ children, content }: Props) {
             {children}
           </div>
         </div>
-        {process.env.COMMENT_SERVER_URL && (
+        {process.env.NEXT_PUBLIC_COMMENT_SERVER_URL && (
           <div
             className="pb-8 pt-8 text-center text-gray-700 dark:text-gray-300"
             id="comment"
           >
-            <Comment serverURL={process.env.COMMENT_SERVER_URL} />
+            <Comment serverURL={process.env.NEXT_PUBLIC_COMMENT_SERVER_URL} />
           </div>
         )}
       </div>

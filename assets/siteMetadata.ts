@@ -1,24 +1,19 @@
 const siteMetadata = {
-  title: `凝结尾迹 - zS1m's Blog`,
   author: 'zS1m',
-  headerTitle: '凝结尾迹',
-  description: '记录分享日常学习的软硬件技术内容',
-  language: 'zh-cn',
   buildTime: '2023-08-01 10:14:12', // 建站时间
   theme: 'system', // system, dark or light
-  siteUrl: 'https://www.contrails.space',
+  siteUrl: 'https://contrails.space',
   siteRepo: 'https://github.com/zS1m/nextjs-contrails',
   siteLogo: '/static/images/logo.png',
   socialBanner: 'https://chev.contrails.space:12650/images/2024/06/10/848fc6c438b5fe8321029b6b00d120f7.png',
   mastodon: 'https://mastodon.social/@mastodonuser',
-  email: 'chaosspades@gmail.com',
+  email: 'mail@contrails.space',
   github: 'https://github.com/zS1m',
   twitter: 'https://twitter.com/Twitter',
   facebook: 'https://facebook.com',
   youtube: 'https://youtube.com',
   linkedin: 'https://www.linkedin.com',
   juejin: 'https://juejin.cn/user/3171446982457687/posts',
-  locale: 'zh-CN',
   analytics: {
     // If you want to use an analytics provider you have to add it to the
     // content security policy in the `next.config.js` file.

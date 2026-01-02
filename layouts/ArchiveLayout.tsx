@@ -1,8 +1,9 @@
 import { CoreContent } from 'pliny/utils/contentlayer';
 import { Post } from 'contentlayer/generated';
 import dayjs from 'dayjs';
-import { truncateSummary } from '@/lib/utils';
+import { truncateSummary, formatDate } from '@/lib/utils';
 import Link from '@/components/Link';
+import { useTranslations, useLocale } from 'next-intl';
 
 const postDateTemplate: Intl.DateTimeFormatOptions = {
   weekday: 'long',
@@ -18,6 +19,9 @@ interface YearGroup {
 }
 
 export default function AuthorLayout({ posts }: Props) {
+  const locale = useLocale();
+  const t = useTranslations('ArchiveLayout');
+
   const postsSortedByYear: YearGroup = {};
   posts.forEach((post) => {
     const year = dayjs(post.date).year();
@@ -35,7 +39,7 @@ export default function AuthorLayout({ posts }: Props) {
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
         <div className="space-y-2 pb-8 pt-6 md:space-y-5">
           <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
-            归档
+            {t('title')}
           </h1>
         </div>
         <div>
@@ -53,7 +57,7 @@ export default function AuthorLayout({ posts }: Props) {
                         <div className="absolute top-1/2 -mt-2.5 -left-3 bg-white dark:bg-black h-5 w-5 rounded-full border-4 border-primary-500"></div>
                         <div className="pl-10">
                         <span className="leading-6 text-gray-500 dark:text-gray-400">
-                          {new Date(post.date).toLocaleDateString('zh-CN', postDateTemplate)}
+                          {formatDate(post.date, locale, postDateTemplate)}
                         </span>
                           <h3 className="text-3xl text-gray-600 font-semibold tracking-wide mb-2 mt-1">
                             <Link href={`/posts/${post.url}`} className="text-gray-900 dark:text-gray-100 hover:text-primary-500 dark:hover:text-primary-400">

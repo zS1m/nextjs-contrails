@@ -1,0 +1,65 @@
+{
+  "Common": {
+    "prev_page": "上一页",
+    "next_page": "下一页"
+  },
+  "Main": {
+    "title": "最新文章",
+    "read_more": "查看更多",
+    "all_posts": "全部文章"
+  },
+  "Nav": {
+    "home": "主页",
+    "posts": "文章",
+    "tags": "标签",
+    "archives": "归档",
+    "friends": "友链",
+    "about": "关于"
+  },
+  "Footer": {
+    "author": "zS1m"
+  },
+  "ListLayout": {
+    "all_posts": "全部文章"
+  },
+  "ArchiveLayout": {
+    "title": "归档"
+  },
+  "FriendLayout": {
+    "title": "友链"
+  },
+  "AuthorLayout": {
+    "title": "关于"
+  },
+  "PostLayout": {
+    "author": "作者",
+    "tags": "标签",
+    "prev_article": "上一篇文章",
+    "next_article": "下一篇文章",
+    "back_to_blog": "返回全部文章"
+  },
+  "Meta": {
+    "title": "zS1m's Blog",
+    "description": "记录分享日常学习的软硬件技术内容",
+    "header_title": "凝结尾迹",
+    "author": "zS1m"
+  },
+  "Home": {
+    "title": "凝结尾迹"
+  },
+  "About": {
+    "title": "关于"
+  },
+  "Archives": {
+    "title": "归档"
+  },
+  "Friends": {
+    "title": "友链"
+  },
+  "Blog": {
+    "title": "文章"
+  },
+  "Tags": {
+    "title": "标签"
+  }
+}

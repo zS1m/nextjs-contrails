@@ -1,11 +1,11 @@
 import Image from 'next/image';
 import Link from '@/components/Link';
 import Tag from '@/components/Tag';
-import siteMetadata from '@/assets/siteMetadata';
 import { formatDate, truncateSummary } from '@/lib/utils';
 import { CoreContent } from 'pliny/utils/contentlayer';
 import { Post } from 'contentlayer/generated';
 import banner from '@/public/images/banner.png';
+import { useTranslations, useLocale } from 'next-intl';
 
 type Props = {
   posts: CoreContent<Post>[]
@@ -14,21 +14,29 @@ type Props = {
 const MAX_DISPLAY = 6;
 
 export default function Home({ posts }: Props) {
+  const locale = useLocale();
+
+  const t = useTranslations('Meta');
+  const m = useTranslations('Main');
+
+  const filteredPosts = posts.filter(post => post.lang === locale);
+  const slicedPosts = filteredPosts.slice(0, MAX_DISPLAY);
+
   return (
     <>
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
         <Image src={banner} alt='banner' priority={true} />
         <div className="space-y-2 pb-8 pt-6 md:space-y-5">
           <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
-            最新文章
+            {m('title')}
           </h1>
           <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">
-            {siteMetadata.description}
+            {t('description')}
           </p>
         </div>
         <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-          {!posts.length && 'No posts found.'}
-          {posts.slice(0, MAX_DISPLAY).map((post) => {
+          {!filteredPosts.length && 'No posts found.'}
+          {slicedPosts.map((post) => {
             const { slug, date, url, title, summary, tags } = post;
             return (
               <li key={slug} className="py-12">
@@ -37,7 +45,7 @@ export default function Home({ posts }: Props) {
                     <dl>
                       <dt className="sr-only">Published on</dt>
                       <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
-                        <time dateTime={date}>{formatDate(date)}</time>
+                        <time dateTime={date}>{formatDate(date, locale)}</time>
                       </dd>
                     </dl>
                     <div className="space-y-5 xl:col-span-3">
@@ -67,7 +75,7 @@ export default function Home({ posts }: Props) {
                           className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                           aria-label={`Read "${title}"`}
                         >
-                          查看更多 &rarr;
+                          {m('read_more')} &rarr;
                         </Link>
                       </div>
                     </div>
@@ -78,14 +86,14 @@ export default function Home({ posts }: Props) {
           })}
         </ul>
       </div>
-      {posts.length > MAX_DISPLAY && (
+      {filteredPosts.length > MAX_DISPLAY && (
         <div className="flex justify-end text-base font-medium leading-6">
           <Link
             href="/posts"
             className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
             aria-label="All posts"
           >
-            全部文章 &rarr;
+            {m('all_posts')} &rarr;
           </Link>
         </div>
       )}

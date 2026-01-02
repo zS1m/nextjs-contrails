@@ -1,6 +1,7 @@
+import type { Post, Author } from 'contentlayer/generated';
+
 import { ReactNode } from 'react';
 import { CoreContent } from 'pliny/utils/contentlayer';
-import type { Post, Author } from 'contentlayer/generated';
 import Link from '@/components/Link';
 import PageTitle from '@/components/PageTitle';
 import SectionContainer from '@/components/SectionContainer';
@@ -11,6 +12,8 @@ import ProgressBar from '@/components/ProgressBar';
 import Comment from '@/components/Comment';
 import { FaRegCalendarAlt } from 'react-icons/fa';
 import { FaRegHourglassHalf, FaFire } from 'react-icons/fa6';
+import { useTranslations } from 'next-intl';
+import { formatDate } from '@/lib/utils';
 
 const postDateTemplate: Intl.DateTimeFormatOptions = {
   weekday: 'long',
@@ -28,8 +31,10 @@ interface LayoutProps {
 }
 
 export default function PostLayout({ content, authorDetails, next, prev, children }: LayoutProps) {
-  const { path, date, title, tags, readingTime } = content;
-  const basePath = path.split('/')[0]
+  const t = useTranslations('PostLayout');
+
+  const { path, date, title, lang, tags, readingTime } = content;
+  const basePath = path.split('/')[0];
 
   return (
     <SectionContainer>
@@ -45,7 +50,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                   <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
                     <time dateTime={date} className="inline-flex items-center">
                       <FaRegCalendarAlt className="mr-1.5"/>
-                      {new Date(date).toLocaleDateString('zh-CN', postDateTemplate)}
+                      {formatDate(date, lang, postDateTemplate)}
                     </time>
                   </dd>
                 </div>
@@ -76,7 +81,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
             </div>
             {/* 作者 */}
             <dl className="pt-6 xl:pt-4">
-              <dt className="sr-only">作者</dt>
+              <dt className="sr-only">{t('author')}</dt>
               <dd>
                 <ul className="flex flex-wrap justify-center gap-4 sm:space-x-12 xl:block xl:space-x-0 xl:space-y-8">
                   {authorDetails.map((author) => (
@@ -120,7 +125,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                 {tags && (
                   <div className="py-4">
                     <h2 className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                      标签
+                      {t('tags')}
                     </h2>
                     <div className="flex flex-wrap">
                       {tags.map((tag) => (
@@ -134,7 +139,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                     {prev && prev.path && (
                       <div>
                         <h2 className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                          上一篇文章
+                          {t('prev_article')}
                         </h2>
                         <div className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
                           <Link href={`/posts/${prev.url}`}>{prev.title}</Link>
@@ -144,7 +149,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                     {next && next.path && (
                     <div>
                       <h2 className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                        下一篇文章
+                        {t('next_article')}
                       </h2>
                       <div className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
                         <Link href={`/posts/${next.url}`}>{next.title}</Link>
@@ -158,19 +163,19 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                 <Link
                   href={`/${basePath}`}
                   className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
-                  aria-label="全部文章"
+                  aria-label={t('back_to_blog')}
                 >
-                  &larr; 全部文章
+                  &larr; {t('back_to_blog')}
                 </Link>
               </div>
             </footer>
           </div>
-          {process.env.COMMENT_SERVER_URL && (
+          {process.env.NEXT_PUBLIC_COMMENT_SERVER_URL && (
             <div
               className="pt-8 text-center text-gray-700 dark:text-gray-300"
               id="comment"
             >
-              <Comment serverURL={process.env.COMMENT_SERVER_URL} />
+              <Comment serverURL={process.env.NEXT_PUBLIC_COMMENT_SERVER_URL} />
             </div>
           )}
         </div>

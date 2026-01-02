@@ -1,12 +1,17 @@
 import type { Post } from 'contentlayer/generated';
 
-export function formatDate(date: string) {
-  const options: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  };
-  return new Date(date).toLocaleDateString('zh-CN', options);
+const defaultDateOptions: Intl.DateTimeFormatOptions = {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+}
+
+export function formatDate(date: string, locale = 'zh', options = defaultDateOptions) {
+  const formattedLocale = locale === 'en' ? 'en-US' : 'zh-CN';
+
+  const optionsWithDefaults = { ...defaultDateOptions, ...options };
+
+  return new Date(date).toLocaleDateString(formattedLocale, optionsWithDefaults);
 }
 
 export function sortPosts(posts: Post[]) {

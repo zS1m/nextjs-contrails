@@ -1,14 +1,14 @@
 'use client';
 
-import { usePathname } from 'next/navigation'
-import { slug } from 'github-slugger'
-import { formatDate } from '@/lib/utils'
-import { CoreContent } from 'pliny/utils/contentlayer'
-import type { Post } from 'contentlayer/generated'
-import Link from '@/components/Link'
-import Tag from '@/components/Tag'
-import allTags from '@/lib/tags';
+import { usePathname } from '@/i18n/navigation';
+import { slug } from 'github-slugger';
+import { formatDate } from '@/lib/utils';
+import { CoreContent } from 'pliny/utils/contentlayer';
+import type { Post } from 'contentlayer/generated';
+import Link from '@/components/Link';
+import Tag from '@/components/Tag';
 import { truncateSummary } from '@/lib/utils';
+import { useTranslations, useLocale } from 'next-intl';
 
 interface PaginationProps {
   totalPages: number
@@ -18,21 +18,24 @@ interface ListLayoutProps {
   posts: CoreContent<Post>[]
   title: string
   initialDisplayPosts?: CoreContent<Post>[]
-  pagination?: PaginationProps
+  pagination?: PaginationProps;
+  allTags: Record<string, number>;
 }
 
 function Pagination({ totalPages, currentPage }: PaginationProps) {
-  const pathname = usePathname()
-  const basePath = pathname.split('/')[1]
-  const prevPage = currentPage - 1 > 0
-  const nextPage = currentPage + 1 <= totalPages
+  const c = useTranslations('Common');
+
+  const pathname = usePathname();
+  const basePath = pathname.split('/')[1];
+  const prevPage = currentPage - 1 > 0;
+  const nextPage = currentPage + 1 <= totalPages;
 
   return (
     <div className="space-y-2 pb-8 pt-6 md:space-y-5">
       <nav className="flex justify-between">
         {!prevPage && (
           <button className="cursor-auto disabled:opacity-50" disabled={!prevPage}>
-            上一页
+            {c('prev_page')}
           </button>
         )}
         {prevPage && (
@@ -40,7 +43,7 @@ function Pagination({ totalPages, currentPage }: PaginationProps) {
             href={currentPage - 1 === 1 ? `/${basePath}/` : `/${basePath}/page/${currentPage - 1}`}
             rel="prev"
           >
-            上一页
+            {c('prev_page')}
           </Link>
         )}
         <span>
@@ -48,12 +51,12 @@ function Pagination({ totalPages, currentPage }: PaginationProps) {
         </span>
         {!nextPage && (
           <button className="cursor-auto disabled:opacity-50" disabled={!nextPage}>
-            下一页
+            {c('next_page')}
           </button>
         )}
         {nextPage && (
           <Link href={`/${basePath}/page/${currentPage + 1}`} rel="next">
-            下一页
+            {c('next_page')}
           </Link>
         )}
       </nav>
@@ -66,13 +69,17 @@ export default function ListLayoutWithTags({
   title,
   initialDisplayPosts = [],
   pagination,
+  allTags,
 }: ListLayoutProps) {
-  const pathname = usePathname()
-  const tagCounts = allTags;
-  const tagKeys = Object.keys(tagCounts)
-  const sortedTags = tagKeys.sort((a, b) => tagCounts[b] - tagCounts[a])
+  const locale = useLocale();
+  const t = useTranslations('ListLayout');
 
-  const displayPosts = initialDisplayPosts.length > 0 ? initialDisplayPosts : posts
+  const pathname = usePathname();
+  const tagCounts = allTags;
+  const tagKeys = Object.keys(tagCounts);
+  const sortedTags = tagKeys.sort((a, b) => a.localeCompare(b, locale, { sensitivity: 'base' }));
+
+  const displayPosts = initialDisplayPosts.length > 0 ? initialDisplayPosts : posts;
 
   return (
     <>
@@ -86,26 +93,26 @@ export default function ListLayoutWithTags({
           <div className="hidden max-h-screen h-full sm:flex flex-wrap bg-gray-50 dark:bg-gray-900/70 shadow-md pt-5 dark:shadow-gray-800/40 rounded min-w-[280px] max-w-[280px] overflow-auto">
             <div className="py-4 px-6">
               {pathname.startsWith('/posts') ? (
-                <h3 className="text-primary-500 font-bold uppercase">全部文章</h3>
+                <h3 className="text-primary-500 font-bold uppercase">{t('all_posts')}</h3>
               ) : (
                 <Link
                   href={`/posts`}
                   className="font-bold uppercase text-gray-700 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-500"
                 >
-                  全部文章
+                  {t('all_posts')}
                 </Link>
               )}
               <ul>
                 {sortedTags.map((t) => {
                   return (
                     <li key={t} className="my-3">
-                      {pathname.split('/tags/')[1] === slug(t) ? (
+                      {pathname.split('/tags/')[1] === encodeURI(slug(t)) ? (
                         <h3 className="inline py-2 px-3 uppercase text-sm font-bold text-primary-500">
                           {`${t} (${tagCounts[t]})`}
                         </h3>
                       ) : (
                         <Link
-                          href={`/tags/${slug(t)}`}
+                          href={`/tags/${encodeURI(slug(t))}`}
                           className="py-2 px-3 uppercase text-sm font-medium text-gray-500 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-500"
                           aria-label={`View posts tagged ${t}`}
                         >
@@ -128,7 +135,7 @@ export default function ListLayoutWithTags({
                       <dl>
                         <dt className="sr-only">Published on</dt>
                         <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
-                          <time dateTime={date}>{formatDate(date)}</time>
+                          <time dateTime={date}>{formatDate(date, locale)}</time>
                         </dd>
                       </dl>
                       <div className="space-y-3">

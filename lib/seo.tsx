@@ -1,30 +1,18 @@
-import { Metadata } from 'next'
-import siteMetadata from '@/assets/siteMetadata'
+import { routing } from '@/i18n/routing';
 
-interface PageSEOProps {
-  title: string
-  description?: string
-  image?: string
-  [key: string]: any
-}
+export const buildAlternates = ({
+  locale,
+  pathname,
+}: {
+  locale: string;
+  pathname: string;
+}) => {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
-export function genPageMetadata({ title, description, image, ...rest }: PageSEOProps): Metadata {
   return {
-    title,
-    openGraph: {
-      title: `${title} | ${siteMetadata.title}`,
-      description: description || siteMetadata.description,
-      url: './',
-      siteName: siteMetadata.title,
-      images: image ? [image] : [siteMetadata.socialBanner],
-      locale: 'zh_CN',
-      type: 'website',
-    },
-    twitter: {
-      title: `${title} | ${siteMetadata.title}`,
-      card: 'summary_large_image',
-      images: image ? [image] : [siteMetadata.socialBanner],
-    },
-    ...rest,
-  }
+    canonical: `${siteUrl}/${locale}${pathname}`,
+    languages: Object.fromEntries(
+      routing.locales.map(l => [l, `${siteUrl}/${l}${pathname}`])
+    ),
+  };
 }
