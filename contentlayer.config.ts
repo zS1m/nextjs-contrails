@@ -11,7 +11,19 @@ import rehypeKatex from 'rehype-katex';
 import { countWords } from './lib/utils';
 
 const computedFields: ComputedFields = {
-  readingTime: { type: 'json', resolve: (doc) => countWords(doc.body.raw) },
+  lang: {
+    type: 'string',
+    resolve: (doc) => doc._raw.flattenedPath.split('/')[1],
+  },
+  readingTime: {
+    type: 'json',
+    resolve: (doc) => {
+      const locale = doc._raw.flattenedPath.split('/')[1];
+      const options = { locale };
+
+      return countWords(doc.body.raw, options);
+    }
+  },
   slug: {
     type: 'string',
     resolve: (doc) => doc._raw.flattenedPath.replace(/^.+?(\/)/, ''),
@@ -23,10 +35,6 @@ const computedFields: ComputedFields = {
   filePath: {
     type: 'string',
     resolve: (doc) => doc._raw.sourceFilePath,
-  },
-  lang: {
-    type: 'string',
-    resolve: (doc) => doc._raw.flattenedPath.split('/')[1],
   },
 };
 

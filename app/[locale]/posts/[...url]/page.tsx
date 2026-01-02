@@ -61,8 +61,8 @@ export default function Page({ params }: Props) {
 
   const authorList = post?.authors || ['default'];
   const authorDetails = authorList.map((author) => {
-    const authorResults = allAuthors.find((p) => p.slug === author)
-    return coreContent(authorResults as Author)
+    const authorResults = allAuthors.find((p) => p.slug === `${locale}/${author}`);
+    return coreContent(authorResults as Author);
   });
   const mainContent = coreContent(post);
   const jsonLd = post.structuredData;

@@ -28,23 +28,56 @@ export function truncateSummary(text?: string, maxLength = 160) {
   }
 }
 
-export function countWords(str: string) {
-  const chWords = Array.from(str)
-      .filter((char) => /[\u4e00-\u9fa5]/.test(char))
-      .length
+interface CountWordsOptions {
+  locale?: string;
+  zhCharsPerMin?: number;
+  enWordsPerMin?: number;
+  round?: 'ceil' | 'round';
+}
 
-  const enWords = Array.from(str)
-      .map((char) => /[a-zA-Z0-9\s]/.test(char) ? char : ' ')
-      .join('').split(/\s+/).filter(s => s)
-      .length
+export function countWords(str: string, opts: CountWordsOptions = {}) {
+  const {
+    locale = 'zh',
+    zhCharsPerMin = 300,
+    enWordsPerMin = 220,
+    round = 'ceil',
+  } = opts
 
-  const words = chWords + enWords;
-  const minutes = Math.round(words / 300);
-  const text = minutes < 1 ?  '小于一分钟' : `${minutes} 分钟`;
+  // 中文：统计汉字（含常用 CJK 扩展）
+  // 基础范围：\u4E00-\u9FFF
+  // 扩展：\u3400-\u4DBF（CJK Ext A）
+  const chChars =
+    (str.match(/[\u3400-\u4DBF\u4E00-\u9FFF]/g) ?? []).length;
+
+  // 英文：统计“词”
+  // 规则：
+  // - 允许字母数字
+  // - 允许内部出现 ' 或 -（don't, long-term）
+  const enWords =
+    (str.match(/[A-Za-z0-9]+(?:['-][A-Za-z0-9]+)*/g) ?? []).length;
+
+  // 估算时间：分别按语言阅读速度计算，再合并
+  const minutesFloat =
+    (chChars / zhCharsPerMin) + (enWords / enWordsPerMin);
+
+  const minutes =
+    round === 'round' ? Math.round(minutesFloat) : Math.ceil(minutesFloat);
+
+  // 按 locale 输出文案
+  let text: string;
+  if (locale === 'en') {
+    text = minutes < 1 ? 'Less than 1 min' : `${minutes} min read`;
+  } else {
+    text = minutes < 1 ? '小于 1 分钟' : `${minutes} 分钟`;
+  }
 
   return {
-    words,
+    // 保留拆分结果
+    chChars,
+    enWords,
+    // 综合量，用于排序/统计
+    words: chChars + enWords,
     minutes,
-    text
-  };
+    text,
+  }
 }
