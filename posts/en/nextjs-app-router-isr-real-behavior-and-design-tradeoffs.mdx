@@ -1,0 +1,177 @@
+---
+title: "The True Behavior and Design Tradeoffs of ISR in Next.js App Router: Why Your Pages Aren't Updating"
+date: '2025-12-31'
+url: 'nextjs-app-router-isr-behavior-and-design-tradeoffs'
+summary: "Deconstructing how ISR truly works in the Next.js App Router to clarify the root cause of 'why pages don't update despite data changes.' Understand ISR's design assumptions, latency, and inherent inconsistencies from a content-driven site perspective. Discuss when to continue using ISR versus transitioning to on-demand revalidate based on real-world operational rhythms."
+tags:
+  - Next.js
+  - ISR
+  - Caching
+  - Rendering
+  - Content Engineering
+  - Architecture Trade-offs
+---
+
+When building content-driven sites using Next.js App Router, many developers encounter a common issue:
+API data has been updated, yet page content remains unchanged for an extended period.
+
+This is typically not due to incorrect cache configuration, nor solely because ISR is "unreliable." More often, it stems from misunderstandings about how ISR actually operates and the trade-offs it intentionally makes.
+This article will explain ISR's actual behavior within App Router—and the problems it can and cannot solve—by examining a real-world troubleshooting case.
+
+
+## Where the Problem Began
+
+> Why isn't the homepage content updating after API data refreshes?
+
+While maintaining a content-driven website recently, I encountered an issue during testing: the homepage failed to update after new data was added to the database.
+Initially, I suspected Cloudflare caching the API response. Postman requests confirmed the data had updated.
+I then investigated caching on both frontend and backend deployment platforms but found no issues. After recompiling and redeploying the frontend code, the homepage data updated correctly. This narrowed the fault to Next.js's caching mechanism.
+
+
+## A Common Yet Dangerous Equation
+
+> API is dynamic ≠ Page will update
+
+Typically, we instinctively assume that changes in API data directly trigger page content updates, following the sequence: `API data update -> Page request fetches new data -> Page content updates`.
+However, in certain scenarios, this rendering process breaks down. A commonly overlooked point is whether the page is regenerated—meaning there's a disconnect between data changes and page generation.
+
+We often mistakenly treat Next.js's App Router data fetching as a reactive system that automatically propagates data changes. The official documentation describes it thus:
+
+> Caching is a technique for storing the result of data fetching and other computations so that future requests for the same data can be served faster,
+without doing the work again. While revalidation allows you to update cache entries without having to rebuild your entire application.
+
+This indicates that Next.js's rendered page results can be reused.
+
+## What Problem Does ISR Solve?
+
+Before ISR, content-focused sites faced a dilemma:
+- Pure SSG: Stable pages but delayed updates, leaving users seeing outdated content
+- Pure SSR: Timely content delivery but high server load and response times
+
+Unlike e-commerce sites demanding real-time updates, content-driven sites typically require less immediate data freshness—yet they cannot remain static forever. ISR emerged precisely to bridge this gap.
+ISR was designed to strike a balance between SSG and SSR, enabling pages to leverage the performance benefits of static generation while maintaining content updates within acceptable timeframes.
+
+ISR's design assumptions:
+- Delay is tolerable
+- Inconsistencies are temporary
+
+ISR's core objective is trading time for stability—exchanging predictable latency for deployment and caching benefits. It is not designed for frequently changing data and inherently does not pursue real-time updates.
+
+## How ISR Actually Works
+
+> When exactly does a page update?
+> It's not "auto-refreshing every N seconds," but rather triggering an update upon the "next visit" after exceeding N seconds.
+
+Contrary to first impressions, ISR isn't a background refresh timer. When the revalidate cycle arrives, pre-generated pages don't update immediately—they wait for the next user visit to trigger the update.
+
+Example:
+- A page set to `revalidate: 60` means content can update every 60 seconds
+- User A visits the page at 12:00:00; the page is generated and cached
+- User B visits the page at 12:00:30; the content displayed remains what User A saw
+- User C visits the page at 12:01:05; the revalidate cycle expires, triggering page regeneration in the background, **but User C still receives the stale response**
+- User D visits the page at 12:01:10, and the page content updates to the latest version, triggered by User C's visit
+
+From the above example, it's clear that page updates in ISR are passively triggered—checking for regeneration only occurs when a user visits. This means `delayed visibility` is a deliberate design choice, not a flaw.
+
+
+## Advantages and Trade-offs of ISR Compared to Other Rendering Strategies
+
+> This is not an evolutionary path, but a trade-off
+
+### ISR vs. SSG:
+- Solves the problem of long-term static content by enabling periodic page updates, though not real-time
+- Retains the caching benefits of static generation: fast response times and low server load
+
+### ISR vs. SSR:
+- Reduces server load; stable, cacheable content lowers costs
+- Sacrifices real-time content; introduces latency and inconsistency, cannot guarantee freshness on every visit
+
+ISR offers predictable behavior and controllable costs, but isn't suitable for scenarios requiring strong consistency or real-time updates. **ISR isn't an upgrade over SSR/SSG—it's a distinct choice**
+
+
+## dynamic vs revalidate
+
+> dynamic is not a "bug switch," but a solution for different scenarios
+
+In Next.js App Router, `dynamic` and `revalidate` are distinct rendering strategies: `dynamic` determines "whether to render each time," while `revalidate` determines "whether to reuse old pages."
+
+When a site's content must reflect the latest state on every visit, or when content is highly context-dependent, delayed visibility is unacceptable. `dynamic` re-renders on every visit, making it ideal for this scenario.
+Conversely, when page content is relatively stable, `revalidate` offers a suitable solution. It trades time for stability by allowing some delay.
+
+If I notice a site's homepage isn't updating promptly, I might choose `dynamic` to ensure fresh content on every visit. This seems like a solution, but it merely shifts the problem to a different scenario.
+`dynamic` and `revalidate` aren't mutually exclusive choices—they represent different rendering strategies for distinct requirements.
+
+
+## Page-Level Revalidation vs. API-Level Revalidation
+
+> Granularity depends on consistency requirements, not flexibility
+
+Consider a news site homepage with multiple sections: Today's News, Yesterday's News, etc. When these sections fetch data from separate APIs and use API-level revalidation, this scenario may occur:
+Today's News remains unchanged while Yesterday's News updates. If spanning multiple days, this could even create a disjointed scenario where Yesterday's News appears more recent than Today's News—directly undermining the site's credibility.
+
+For pages aggregating multiple APIs, API-level revalidate struggles to guarantee content consistency. As the final delivery point, the aggregated page should shoulder consistency responsibility, making page-level revalidate more advantageous.
+Similarly, if a page's content originates from multiple interfaces but lacks strict suppression requirements between modules, API-level revalidate may be considered for higher performance.
+Ultimately, the choice of revalidate granularity should be based on the page's consistency requirements, not flexibility.
+
+## ISR Behavior in Low-Traffic Content Sites
+
+> Why does the website seem broken?
+
+As mentioned earlier, ISR can be configured to revalidate, triggering page updates on the user's next visit. When site traffic is very low, page refresh frequency drastically decreases, potentially leading to pages remaining unchanged for extended periods.
+When users visit such pages, they may see content that is days or even weeks old, creating the impression that the website is "broken."
+
+This is actually an intended outcome of ISR design. When User A visits a page, they see content generated long ago, and their visit triggers a page re-generation.
+However, due to the potentially days-long intervals between visits on low-traffic sites, by the time User B visits next, the page content remains the version last updated by User A. Consequently, User B still sees outdated information.
+
+For low-traffic content sites, traffic volume may dictate content refresh frequency. As long as this aligns with the original design intent and is acceptable, this "lazy updating" behavior is reasonable and does not indicate a "broken" website.
+
+
+## Does ISR Lead to Out-of-Sync Pages?
+
+> This is not an issue requiring excessive concern
+
+While ISR implementation may indeed encounter scenarios of content asynchrony, this represents a design trade-off that should be understood and accepted—not an issue warranting undue alarm.
+ISR's architecture inherently permits transient inconsistencies. Rather than fixating on "whether inconsistencies occur," the critical question is whether such inconsistencies are **predictable**.
+During design, clearly define the content site's actual consistency requirements. Analyze when inconsistencies might occur and whether their potential impact is acceptable—rather than blindly pursuing timeliness or uniformity.
+When content inconsistencies are controllable and predictable, "page asynchrony" ceases to be an excessive concern. It becomes a known factor in the design.
+
+
+## Time-Driven Content ISR Strategy
+
+Take the homepage I maintain as an example. It aggregates "Future Content" and "Latest Content" modules—time-driven content where "Future Content" manages content beyond today, while "Latest Content" manages content from today and earlier.
+
+This introduces a trade-off between consistency and flexibility. Opting for API-level revalidate would make a module's caching strategy independent of the page, turning the homepage into an "assembled snapshot." For my homepage, this unnatural state is unacceptable.
+Furthermore, the homepage has a stable structure with changes occurring only at the content layer. Therefore, page-level ISR is more suitable as the overall invalidation strategy. A page-level strategy allows my pages to update and expire synchronously as a whole, avoiding a state where "part is new and part is old." This aligns with my business semantics.
+
+Data updates on my site occur concentrated at a specific time point within a day. There is only one critical change window per day, with data remaining largely stable at other times. Setting revalidate to one day could easily result in users accessing the page before the critical window, followed by no refreshes for the entire subsequent day.
+Given the site's low traffic, revalidate effectively functions as "the maximum number of visit opportunities I'm willing to let this page miss daily." Considering the homepage doesn't require minute-level real-time updates, yet I also don't want it displaying stale data for half a day or an entire day,
+I set revalidate to 1 hour. This ensures that even with low traffic, there are 24 opportunities daily to trigger a page refresh. As long as one user visits after the critical window, they will likely see the updated data.
+
+Why not use a smaller value, like 5 minutes? Because based on the project's actual circumstances, it's unnecessary. Setting revalidate to 5 minutes would make the page behave almost like dynamic rendering, while retaining the complexity of ISR without significant benefit. Most importantly, **the business can tolerate the current threshold of latency**.
+For me, ISR's revalidate isn't a caching parameter, but a way to model the business rhythm.
+
+
+## When to Transition from ISR to On-Demand Revalidate
+
+> The decision to transition to on-demand revalidate doesn't hinge on technical maturity, but on whether the "content update -> user visibility" chain begins impacting user trust.
+
+My current site updates only during a single daily critical window, with low traffic and users likely in exploratory or occasional visit phases. Their expectations lean toward "stability" rather than "timeliness." Transitioning becomes necessary if:
+- Users start treating my site as a "near-real-time information source"
+- Data update frequency increases/becomes irregular
+- Users frequently report outdated content
+
+This indicates my site's content has shifted from time-driven to event-driven, with users demanding greater real-time relevance. At this point, transitioning from ISR to an on-demand revalidate mechanism becomes necessary.
+In other words, when users begin perceiving "uncertainty in update timing," it's time to reconsider rendering strategies. On-demand revalidate represents a distinct approach for the site's new phase—not merely a patch for ISR.
+
+
+## Conclusion
+
+> ISR isn't unreliable—it's just placed under the wrong expectations.
+
+ISR is valid only when site content can tolerate delays and brief inconsistencies, and when access frequency is unstable. Software engineering has no silver bullets, and ISR isn't omnipotent. The key isn't whether to use ISR, but whether you're willing to accept its inherent delays and inconsistencies. Understand ISR's design trade-offs and choose the appropriate rendering strategy based on business needs.
+
+
+---
+### References
+
+- [Caching and Revalidating](https://nextjs.org/docs/15/app/getting-started/caching-and-revalidating)

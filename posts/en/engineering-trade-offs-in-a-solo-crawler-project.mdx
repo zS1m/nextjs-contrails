@@ -4,11 +4,11 @@ date: '2026-01-01'
 url: 'from-scrapy-to-custom-crawler-engineering-decisions-in-solo-projects'
 summary: 'For solo long-term projects, engineering challenges are rarely about what’s possible, but about what remains sustainable over time. This article reflects on the engineering risks I encountered while using Scrapy and explains why I ultimately chose to build a custom crawler framework—not as an upgrade, but as a deliberate redistribution of engineering risk.'
 tags:
-  - Engineering decisions
-  - Architecture trade-offs
-  - Long-term maintenance
-  - Solo projects
-  - Crawler engineering
+  - Engineering Decisions
+  - Architecture Trade-offs
+  - Long-term Maintenance
+  - Solo Projects
+  - Crawler Engineering
 ---
 
 This article is neither a technical comparison of framework merits nor an implementation guide for building a custom crawler.
@@ -40,19 +40,19 @@ During Scrapy's compilation and deployment, non-business-related third-party dep
 As the business evolves, such conflicts occur more frequently, and resolving them often depends on the maintenance status of external ecosystems.
 
 As a solo developer, I cannot predict or control the update pace of these external dependencies, making project progress unstable.
-For long-term solo projects, issues requiring “waiting for external fixes” represent unacceptable systemic risks.
+For long-term solo projects, issues requiring "waiting for external fixes" represent unacceptable systemic risks.
 
 ### Maintenance Model Mismatch: A Solo Developer Can't Be in Two Places at Once
 
 In actual project operation, issues like crawler errors, data anomalies, or missing data typically require me to proactively check logs to detect and fix them.
 Under long-term unattended conditions, the project cannot proactively expose problems. Instead, it implicitly assumes a dedicated maintainer who monitors it frequently and continuously—an assumption that doesn't hold for solo projects.
 
-What I actually need is a “system that exposes problems even when unattended,” not a “fully functional system requiring my constant attention.” Reliance on manual monitoring is a maintenance model unsustainable for a solo project over the long term.
+What I actually need is a "system that exposes problems even when unattended," not a "fully functional system requiring my constant attention." Reliance on manual monitoring is a maintenance model unsustainable for a solo project over the long term.
 
 ### Increasing Structural Rigidity: Rigid Conventions Eroding Boundaries
 
 In Scrapy, data flows from the `spider` to the `item pipeline` for processing after crawling completes.
-As data processing complexity increased, pipelines gradually became “universal processing zones,” with a single pipeline shouldering excessive responsibilities.
+As data processing complexity increased, pipelines gradually became "universal processing zones," with a single pipeline shouldering excessive responsibilities.
 
 Simultaneously, the sequential execution model prolonged modification paths. Over time, boundaries between processing units blurred, triggering increased coupling and conflicts.
 
@@ -79,7 +79,7 @@ Errors must be systematically organized, not discovered manually.
 
 - **Boundaries must be clear, even if development efficiency is constrained**
 
-I require a system architecture with well-defined boundaries and single-responsibility units. I reject temporarily stuffing logic into “catch-all zones,” even if it means sacrificing some development efficiency in the short term.
+I require a system architecture with well-defined boundaries and single-responsibility units. I reject temporarily stuffing logic into "catch-all zones," even if it means sacrificing some development efficiency in the short term.
 
 ## A Crawler Framework Designed Exclusively for My Own Use
 
