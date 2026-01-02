@@ -1,0 +1,92 @@
+---
+title: 'From Scrapy to Custom: Engineering Trade-offs in a Solo Long-Term Crawler Project'
+date: '2026-01-01'
+url: 'from-scrapy-to-custom-crawler-engineering-decisions-in-solo-projects'
+summary: 'For solo long-term projects, engineering challenges are rarely about what’s possible, but about what remains sustainable over time. This article reflects on the engineering risks I encountered while using Scrapy and explains why I ultimately chose to build a custom crawler framework—not as an upgrade, but as a deliberate redistribution of engineering risk.'
+tags:
+  - Engineering decisions
+  - Architecture trade-offs
+  - Long-term maintenance
+  - Solo projects
+  - Crawler engineering
+---
+
+This article is neither a technical comparison of framework merits nor an implementation guide for building a custom crawler.
+It documents how I reassessed engineering risks in a solo, long-term maintenance project and gradually realized that, compared to feature completeness, what I truly needed was a more controllable system.
+The shift from Scrapy to a custom solution wasn't a technical upgrade—it was a pivot in engineering judgment.
+
+## Why Scrapy Was Chosen Initially
+
+At the project's inception, I needed a crawler framework that could be deployed quickly for MVP validation.
+Given the project's nature as a long-term, non-profit solo endeavor, I had to strictly control development costs and time investment.
+
+[Scrapy Cloud (Zyte)](https://www.zyte.com/) generously offered a permanently free unit to users who had ever been GitHub Education members.
+Ultimately, I turned to Scrapy, which directly met my core needs for cost and speed of launch, allowing me to rapidly validate the MVP without incurring additional expenses.
+
+
+## How the Problem Emerged: Not a Single Failure, but Persistent Friction
+
+During the MVP phase, Scrapy helped me rapidly implement the desired functionality.
+However, as the project scaled, Scrapy’s modules gradually became more heavyweight. Minor changes began affecting multiple modules, and the number of external dependencies requiring resolution steadily increased.
+Returning to the project after months-long breaks meant I had to revisit historical implementations more frequently when modifying or adding features.
+
+What truly alarmed me wasn't any specific error, but the growing uncertainty about my ability to maintain consistent, predictable control over the system.
+
+## Three Engineering Risks I Couldn't Afford
+
+### Uncontrollable Dependencies: The Deadliest Risk for Solo Projects
+
+During Scrapy's compilation and deployment, non-business-related third-party dependencies must be integrated. Version conflicts between some of these dependencies frequently caused deployment failures.
+As the business evolves, such conflicts occur more frequently, and resolving them often depends on the maintenance status of external ecosystems.
+
+As a solo developer, I cannot predict or control the update pace of these external dependencies, making project progress unstable.
+For long-term solo projects, issues requiring “waiting for external fixes” represent unacceptable systemic risks.
+
+### Maintenance Model Mismatch: A Solo Developer Can't Be in Two Places at Once
+
+In actual project operation, issues like crawler errors, data anomalies, or missing data typically require me to proactively check logs to detect and fix them.
+Under long-term unattended conditions, the project cannot proactively expose problems. Instead, it implicitly assumes a dedicated maintainer who monitors it frequently and continuously—an assumption that doesn't hold for solo projects.
+
+What I actually need is a “system that exposes problems even when unattended,” not a “fully functional system requiring my constant attention.” Reliance on manual monitoring is a maintenance model unsustainable for a solo project over the long term.
+
+### Increasing Structural Rigidity: Rigid Conventions Eroding Boundaries
+
+In Scrapy, data flows from the `spider` to the `item pipeline` for processing after crawling completes.
+As data processing complexity increased, pipelines gradually became “universal processing zones,” with a single pipeline shouldering excessive responsibilities.
+
+Simultaneously, the sequential execution model prolonged modification paths. Over time, boundaries between processing units blurred, triggering increased coupling and conflicts.
+
+When the system's primary data flow is locked into a rigidly defined channel, structural evolution becomes impossible, and systemic risks gradually accumulate.
+
+## Not Pursuing Greater Complexity, But Greater Control
+
+Faced with these risks, I decided to develop a more controllable crawler system from scratch.
+This wasn't about chasing more complex features—distributed architectures and high concurrency sound appealing, but they don't impose real constraints on my current project.
+
+My true goal is a system with manageable dependencies, a maintenance model aligned with practical needs, and a clear architecture. This isn't a technical upgrade but a redistribution of engineering risk within existing resource constraints.
+
+
+## Three Design Principles Shaped the Framework's Form
+
+- **Features may be limited, but dependencies must remain controllable**
+
+I can accept the absence of advanced, complex features, but I refuse to tolerate long-term uncertainty caused by uncontrollable external dependencies.
+
+- **Prioritize maintenance investment early to reduce cognitive load later**
+
+I'm willing to frontload operational management by dedicating more effort upfront to monitoring and alerting design, thereby lowering future cognitive burden and maintenance costs.
+Errors must be systematically organized, not discovered manually.
+
+- **Boundaries must be clear, even if development efficiency is constrained**
+
+I require a system architecture with well-defined boundaries and single-responsibility units. I reject temporarily stuffing logic into “catch-all zones,” even if it means sacrificing some development efficiency in the short term.
+
+## A Crawler Framework Designed Exclusively for My Own Use
+
+This framework does not aspire to be a more general-purpose crawler framework. It simply aims to **reduce the number of engineering decisions I must make daily during long-term maintenance** in a solo, long-term project.
+
+
+---
+### References
+
+- [Item Pipeline](https://docs.scrapy.org/en/latest/topics/item-pipeline.html#item-pipeline)
