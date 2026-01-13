@@ -57,7 +57,7 @@ export default function Page({ params }: Props) {
 
   const prev = sortedPosts[postIndex + 1];
   const next = sortedPosts[postIndex - 1];
-  const post = allPosts.find((post) => post.url === url) as Post;
+  const post = filteredPosts.find((post) => post.url === url) as Post;
 
   const authorList = post?.authors || ['default'];
   const authorDetails = authorList.map((author) => {
